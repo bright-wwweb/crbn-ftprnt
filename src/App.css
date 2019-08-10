@@ -13,6 +13,21 @@ body {
   text-align: left;
 }
 
+.App-footer {
+  text-align: right;
+}
+
+.App-header pre p {
+  line-height: 0.05em;
+  font-size: 1.5em;
+}
+
+.App-footer pre p {
+  line-height: 0.05em;
+  font-size: 0.5em;
+  color: gray;
+}
+
 #viz-mount {
   border: 1px solid crimson;
 }
