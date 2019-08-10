@@ -21,7 +21,14 @@ const engine = Engine.create();
 const world = engine.world;
 
 // add bodies
-const stack = Composites.stack(20, 20, 10, 5, 0, 0, (x: any, y: any) => {
+const stack = Composites.stack(
+    20,
+    20,
+    10,
+    5,
+    0,
+    0,
+    (x: any, y: any) => {
     let sides = Math.round(random(1, 8));
 
     // triangles can be a little unstable, so avoid until fixed
