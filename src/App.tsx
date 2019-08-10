@@ -11,22 +11,26 @@ const App: React.FC = () => {
     useEffect(() => {
         d3.select(ref.current)
             .append('circle')
-            .attr("r", 5)
-            .attr("cx", W / 2)
-            .attr("cy", H / 2)
-            .attr("fill", "red")
+            .attr('r', 5)
+            .attr('cx', W / 2)
+            .attr('cy', H / 2)
+            .attr('fill', 'red')
     })
 
     return (
         <div className="App">
             <header className="App-header">
-                <pre>
-                  <p><small>// the bright wwweb × mmmanyfold</small></p>
-                </pre>
+                <pre> // </pre>
             </header>
 
-            <svg id="viz-mount" width={W} height={H} ref={ref}>
-            </svg>
+            <svg id="viz-mount" width={W} height={H} ref={ref}></svg>
+
+            <header className="App-footer">
+                <pre>
+                  <p><small>CRBN_FT_PRNT</small></p>
+                  <p><small>THE BRIGHT WWWEB × MMMANYFOLD + WCOR</small></p>
+                </pre>
+            </header>
         </div>
     );
 }
