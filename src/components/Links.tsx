@@ -1,4 +1,5 @@
-import React, { useRef } from "react"
+import React, { useRef, useEffect } from "react"
+import * as d3 from "d3"
 
 interface ILinkProps {
     link: d3Link
@@ -11,9 +12,17 @@ interface ILinksProps {
 
 const Link: React.FC<ILinkProps> = (props) => {
     const ref = useRef(null)
+
+    useEffect(() => {
+        d3.select(ref.current).data([props.link]);
+    })
+
     return (
-        <line className="link" ref={ref}
-              strokeWidth={Math.sqrt(props.link.value)} />
+        <line 
+            className="link" 
+            ref={ref}
+            strokeWidth={Math.sqrt(props.link.value)} 
+        />
     )
 }
 

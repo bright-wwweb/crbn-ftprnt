@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import * as d3 from "d3"
-import Links from "./components/Links";
-import Nodes from "./components/Nodes";
-
+import Links from "./components/Links"
+import Nodes from "./components/Nodes"
 import './App.css'
 
 interface IProps {
@@ -16,19 +15,19 @@ const App: React.FC<IProps> = (props) => {
     const W = props.width
     const H = props.height
 
-    let simulation: any = null
+    let simulation: any = d3.forceSimulation()
+        .force("link", d3.forceLink().id(function (d: any) {
+            return d.id
+        }))
+        .force("charge", d3.forceManyBody().strength(-100))
+        .force("center", d3.forceCenter(props.width / 2, props.height / 2))
+        .nodes(props.graph.nodes)
+
+    simulation.force("link").links(props.graph.links)
 
     useEffect(() => {
         const node = d3.selectAll(".node")
         const link = d3.selectAll(".link")
-
-        simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function (d: any) {
-                return d.id
-            }))
-            .force("charge", d3.forceManyBody().strength(-100))
-            .force("center", d3.forceCenter(props.width / 2, props.height / 2))
-            .nodes(props.graph.nodes)
 
         function ticked() {
             link
@@ -54,17 +53,7 @@ const App: React.FC<IProps> = (props) => {
                 })
         }
 
-        simulation.force("link").links(props.graph.links)
-        // TODO: fix this call
-        // simulation.nodes(props.graph.nodes).on("tick", ticked)
-
-        // red dot
-        d3.select(svgRef.current)
-            .append("circle")
-            .attr("r", 5)
-            .attr("cx", W / 2)
-            .attr("cy", H / 2)
-            .attr("fill", 'red')
+        simulation.nodes(props.graph.nodes).on("tick", ticked)
     })
 
     return (
@@ -73,7 +62,7 @@ const App: React.FC<IProps> = (props) => {
                 <pre> // </pre>
             </header>
 
-            <svg id="viz-mount" width={W} height={H} ref={svgRef}>
+            <svg className="viz-mount" width={W} height={H}>
                 <Links links={props.graph.links} />
                 <Nodes nodes={props.graph.nodes} simulation={simulation} />
                 {/*<Labels nodes={props.graph.nodes} />*/}

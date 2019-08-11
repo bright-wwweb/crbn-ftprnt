@@ -28,7 +28,7 @@ body {
   color: gray;
 }
 
-#viz-mount {
+.viz-mount {
   border: 1px solid crimson;
 }
 

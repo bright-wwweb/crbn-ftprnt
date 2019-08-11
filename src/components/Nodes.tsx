@@ -35,8 +35,8 @@ const Nodes: React.FC<INodesProps> = (props) => {
         return <Node key={index} node={node} color={color(node.group.toString())}/>
     })
 
-    useEffect(() => {
-        const simulation = props.simulation
+    // useEffect(() => {
+    //     const simulation = props.simulation
 
         // function onDragStart(d: any) {
         //     if (!d3.event.active) {
@@ -65,7 +65,7 @@ const Nodes: React.FC<INodesProps> = (props) => {
         //             .on("start", onDragStart)
         //             .on("drag", onDrag)
         //             .on("end", onDragEnd))
-    })
+    // })
 
     return (
         <g className="nodes">
