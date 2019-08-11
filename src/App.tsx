@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import * as d3 from "d3"
 import Links from "./components/Links"
 import Nodes from "./components/Nodes"
@@ -11,7 +11,6 @@ interface IProps {
 }
 
 const App: React.FC<IProps> = (props) => {
-    let svgRef = useRef(null)
     const W = props.width
     const H = props.height
 
@@ -19,7 +18,7 @@ const App: React.FC<IProps> = (props) => {
         .force("link", d3.forceLink().id(function (d: any) {
             return d.id
         }))
-        .force("charge", d3.forceManyBody().strength(-100))
+        .force("charge", d3.forceManyBody().strength(-75))
         .force("center", d3.forceCenter(props.width / 2, props.height / 2))
         .nodes(props.graph.nodes)
 

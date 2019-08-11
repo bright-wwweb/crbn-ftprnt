@@ -35,6 +35,7 @@ const Nodes: React.FC<INodesProps> = (props) => {
         return <Node key={index} node={node} color={color(node.group.toString())}/>
     })
 
+    // TODO: fix d3.drag call
     // useEffect(() => {
     //     const simulation = props.simulation
 
