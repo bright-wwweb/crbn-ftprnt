@@ -1,5 +1,5 @@
 body {
-  background-color: #282c34;
+  background-color: rgb(28,32,27);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -28,6 +28,16 @@ body {
   color: gray;
 }
 
-#viz-mount {
+.viz-mount {
   border: 1px solid crimson;
+}
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: 1;
 }
