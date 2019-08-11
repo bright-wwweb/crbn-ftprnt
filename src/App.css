@@ -31,3 +31,13 @@ body {
 #viz-mount {
   border: 1px solid crimson;
 }
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: 1;
+}

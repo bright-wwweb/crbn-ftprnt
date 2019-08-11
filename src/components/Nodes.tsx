@@ -38,26 +38,26 @@ const Nodes: React.FC<INodesProps> = (props) => {
     useEffect(() => {
         const simulation = props.simulation
 
-        function onDragStart(d: any) {
-            if (!d3.event.active) {
-                simulation.alphaTarget(0.3).restart()
-            }
-            d.fx = d.x
-            d.fy = d.y
-        }
-
-        function onDrag(d: any) {
-            d.fx = d3.event.x
-            d.fy = d3.event.y
-        }
-
-        function onDragEnd(d: any) {
-            if (!d3.event.active) {
-                simulation.alphaTarget(0)
-            }
-            d.fx = null
-            d.fy = null
-        }
+        // function onDragStart(d: any) {
+        //     if (!d3.event.active) {
+        //         simulation.alphaTarget(0.3).restart()
+        //     }
+        //     d.fx = d.x
+        //     d.fy = d.y
+        // }
+        //
+        // function onDrag(d: any) {
+        //     d.fx = d3.event.x
+        //     d.fy = d3.event.y
+        // }
+        //
+        // function onDragEnd(d: any) {
+        //     if (!d3.event.active) {
+        //         simulation.alphaTarget(0)
+        //     }
+        //     d.fx = null
+        //     d.fy = null
+        // }
 
         // d3.selectAll(".node")
         //     .call(

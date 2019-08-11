@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import * as d3 from 'd3'
+import * as d3 from "d3"
 import Links from "./components/Links";
 import Nodes from "./components/Nodes";
 
@@ -12,18 +12,23 @@ interface IProps {
 }
 
 const App: React.FC<IProps> = (props) => {
-    let ref = useRef(null)
+    let svgRef = useRef(null)
     const W = props.width
     const H = props.height
 
     let simulation: any = null
-    // TODO: fix this call
-    // simulation.force("link").links(props.graph.links)
 
     useEffect(() => {
         const node = d3.selectAll(".node")
         const link = d3.selectAll(".link")
-        const label = d3.selectAll(".label")
+
+        simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function (d: any) {
+                return d.id
+            }))
+            .force("charge", d3.forceManyBody().strength(-100))
+            .force("center", d3.forceCenter(props.width / 2, props.height / 2))
+            .nodes(props.graph.nodes)
 
         function ticked() {
             link
@@ -47,28 +52,14 @@ const App: React.FC<IProps> = (props) => {
                 .attr("cy", function(d: any) {
                     return d.y
                 })
-
-            label
-                .attr("x", function(d: any) {
-                    return d.x + 5
-                })
-                .attr("y", function(d: any) {
-                    return d.y + 5
-                })
         }
 
-        d3.forceSimulation()
-            .force("link", d3.forceLink().id(function (d: any) {
-                console.log(d.id)
-                return d.id;
-            }))
-            .force("charge", d3.forceManyBody().strength(-100))
-            .force("center", d3.forceCenter(props.width / 2, props.height / 2))
-            // .nodes(props.graph.nodes);
-
+        simulation.force("link").links(props.graph.links)
+        // TODO: fix this call
+        // simulation.nodes(props.graph.nodes).on("tick", ticked)
 
         // red dot
-        d3.select(ref.current)
+        d3.select(svgRef.current)
             .append("circle")
             .attr("r", 5)
             .attr("cx", W / 2)
@@ -82,7 +73,7 @@ const App: React.FC<IProps> = (props) => {
                 <pre> // </pre>
             </header>
 
-            <svg id="viz-mount" width={W} height={H} ref={ref}>
+            <svg id="viz-mount" width={W} height={H} ref={svgRef}>
                 <Links links={props.graph.links} />
                 <Nodes nodes={props.graph.nodes} simulation={simulation} />
                 {/*<Labels nodes={props.graph.nodes} />*/}
