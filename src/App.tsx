@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import * as d3 from "d3"
 import Links from "./components/Links"
 import Nodes from "./components/Nodes"
+import Labels from "./components/Labels"
 import './App.css'
 
 interface IProps {
@@ -11,6 +12,7 @@ interface IProps {
 }
 
 const App: React.FC<IProps> = (props) => {
+    const useRef 
     const W = props.width
     const H = props.height
 
@@ -27,6 +29,7 @@ const App: React.FC<IProps> = (props) => {
     useEffect(() => {
         const node = d3.selectAll(".node")
         const link = d3.selectAll(".link")
+        const label = d3.selectAll(".label");
 
         function ticked() {
             link
@@ -50,6 +53,14 @@ const App: React.FC<IProps> = (props) => {
                 .attr("cy", function(d: any) {
                     return d.y
                 })
+
+            label
+                .attr("x", function (d: any) {
+                    return d.x + 5;
+                })
+                .attr("y", function (d: any) {
+                    return d.y + 5;
+                })
         }
 
         simulation.nodes(props.graph.nodes).on("tick", ticked)
@@ -64,7 +75,7 @@ const App: React.FC<IProps> = (props) => {
             <svg className="viz-mount" width={W} height={H}>
                 <Links links={props.graph.links} />
                 <Nodes nodes={props.graph.nodes} simulation={simulation} />
-                {/*<Labels nodes={props.graph.nodes} />*/}
+                <Labels nodes={props.graph.nodes} />
             </svg>
 
             <header className="App-footer">
