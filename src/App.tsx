@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import * as d3 from "d3"
 import Links from "./components/Links"
 import Nodes from "./components/Nodes"
@@ -8,23 +8,49 @@ import './App.css'
 interface IProps {
     width: number
     height: number
-    graph: d3Graph
+    resp: respType
 }
 
-const App: React.FC<IProps> = (props) => {
-    const useRef 
-    const W = props.width
-    const H = props.height
+type respType =
+| "A"
+| "B"
+| "C"
+
+// treeState
+// {
+//     A: {
+//         1: {
+//                 parent: null,
+//                 leftChild: 2,
+//                 rightChild: null, 
+//             },
+//         2: {
+//                 parent: 1,
+//                 leftChild: null,
+//                 rightChild: null,
+//             }
+//     },
+//     B: {
+//     }
+// }
+
+const App: React.FC<IProps> = ({ width, height, resp }) => {
+    const [treeState, setTreeState] = useState<any>({
+        A: {}, 
+        B: {}, 
+        C: {}
+    })
+    const [graph, setGraph] = useState<d3Graph>({nodes:[], links:[]})
 
     let simulation: any = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d: any) {
             return d.id
         }))
         .force("charge", d3.forceManyBody().strength(-75))
-        .force("center", d3.forceCenter(props.width / 2, props.height / 2))
-        .nodes(props.graph.nodes)
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .nodes(graph.nodes)
 
-    simulation.force("link").links(props.graph.links)
+    simulation.force("link").links(graph.links)
 
     useEffect(() => {
         const node = d3.selectAll(".node")
@@ -63,8 +89,36 @@ const App: React.FC<IProps> = (props) => {
                 })
         }
 
-        simulation.nodes(props.graph.nodes).on("tick", ticked)
+        simulation.nodes(graph.nodes).on("tick", ticked)
     })
+
+    const _handleNewResponse = () => {
+        const nodeId = Object.keys(treeState[resp]).length
+        let [ parent, leftChild, rightChild ] = [ null, null, null]
+        if (nodeId > 0) {
+            for(let i=0; i<nodeId; i++) {
+                let node = treeState[resp][i]
+                if (!node.leftChild) {
+                    node.leftChild = nodeId
+                    parent = i
+                } else if (!node.rightChild) {
+                    node.rightChild = nodeId
+                    parent = i
+                }
+            }
+        }
+        
+        treeState[resp][nodeId] = {
+            parent,
+            leftChild,
+            rightChild, 
+        }
+    }
+
+    const createRootNode = () => {
+        // do something
+        // setgraph()
+    }
 
     return (
         <div className="App">
@@ -72,16 +126,16 @@ const App: React.FC<IProps> = (props) => {
                 <pre> // </pre>
             </header>
 
-            <svg className="viz-mount" width={W} height={H}>
-                <Links links={props.graph.links} />
-                <Nodes nodes={props.graph.nodes} simulation={simulation} />
-                <Labels nodes={props.graph.nodes} />
+            <svg className="viz-mount" width={width} height={height}>
+                <Links links={graph.links} />
+                <Nodes nodes={graph.nodes} simulation={simulation} />
+                <Labels nodes={graph.nodes} />
             </svg>
 
             <header className="App-footer">
                 <pre>
                   <p><small>CRBN_FT_PRNT</small></p>
-                  <p><small>THE BRIGHT WWWEB × MMMANYFOLD + WCOR</small></p>
+                  <p><small>BRIGHT WWWEB × MMMANYFOLD + WCOR</small></p>
                 </pre>
             </header>
         </div>
