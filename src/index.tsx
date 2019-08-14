@@ -3,10 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import data from './data';
+
+// stubbed arduino response - TODO: stub this in test
+// 0 represents blue (A) nodes
+const arduinoResp = "A";
 
 ReactDOM.render(
-    <App width={800} height={600} graph={data} />,
+    <App 
+        width={800}
+        height={600}
+        resp={arduinoResp}
+    />,
     document.getElementById('root')
 );
 
