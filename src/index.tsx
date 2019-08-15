@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './utils/styles/global-styles.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './services/serviceWorker';
 
 // stubbed arduino response - TODO: stub this in test
-// 0 represents blue (A) nodes
+// A represents blue nodes
 const arduinoResp = "A";
 
 ReactDOM.render(
