@@ -94,7 +94,7 @@ const App: React.FC<IProps> = ({ width, height, resp }) => {
 
     const _handleNewResponse = () => {
         const nodeId = Object.keys(treeState[resp]).length
-        let [ parent, leftChild, rightChild ] = [ null, null, null]
+        let [ parent, leftChild, rightChild ]: any = [null, null, null]
         if (nodeId > 0) {
             for(let i=0; i<nodeId; i++) {
                 let node = treeState[resp][i]
@@ -107,7 +107,6 @@ const App: React.FC<IProps> = ({ width, height, resp }) => {
                 }
             }
         }
-        
         treeState[resp][nodeId] = {
             parent,
             leftChild,
