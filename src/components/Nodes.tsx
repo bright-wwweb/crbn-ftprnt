@@ -11,7 +11,6 @@ interface INodesProps {
     simulation: any
 }
 
-
 const Node: React.FC<INodeProps> = (props) => {
     const ref = useRef(null)
 

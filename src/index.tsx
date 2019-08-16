@@ -1,7 +1,7 @@
+import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './utils/styles/global-styles.css';
-import App from './App';
 import * as serviceWorker from './services/serviceWorker';
 
 // stubbed arduino response - TODO: stub this in test
