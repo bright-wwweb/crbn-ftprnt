@@ -12,7 +12,6 @@ interface IProps {
 }
 
 const App: React.FC<IProps> = (props) => {
-    const useRef 
     const W = props.width
     const H = props.height
 

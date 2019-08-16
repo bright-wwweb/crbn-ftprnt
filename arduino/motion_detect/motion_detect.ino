@@ -42,11 +42,7 @@ void loop() {
     if (lockLow) {
       //makes sure we wait for a transition to LOW before any further output is made:
       lockLow = false;
-      Serial.println("---");
-      Serial.print("motion detected at ");
-      Serial.print(millis() / 1000);
-      Serial.println(" sec");
-      Serial.println("Hello From Arduino!");
+      Serial.println("A_HIGH");
       delay(50);
     }
     takeLowTime = true;
@@ -65,9 +61,7 @@ void loop() {
       //makes sure this block of code is only executed again after
       //a new motion sequence has been detected
       lockLow = true;
-      Serial.print("motion  ended at ");      //output
-      Serial.print((millis() - pause) / 1000);
-      Serial.println(" sec");
+      Serial.println("A_LOW");
       delay(50);
     }
   }
