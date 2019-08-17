@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/tarm/serial"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -14,12 +15,25 @@ func main() {
 	}
 
 	buf := make([]byte, 128)
-	for {
-		n, err := s.Read(buf)
+	go func() {
+		for {
+			n, err := s.Read(buf)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			log.Printf("%s\n", string(buf[:n]))
+		}
+	}()
+
+	http.HandleFunc("/ws", func(writer http.ResponseWriter, request *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+			return
 		}
 
-		log.Printf("%s\n", string(buf[:n]))
-	}
+		client := &Client{conn: conn, send: make(chan []byte, 256)}
+
+	})
 }
