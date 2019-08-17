@@ -1,15 +1,27 @@
 package main
 
 import (
+	"github.com/gorilla/websocket"
 	"github.com/tarm/serial"
 	"log"
 	"net/http"
 )
 
-func main() {
-	c := &serial.Config{Name: "/dev/cu.usbmodem14301", Baud: 9600}
+var upgrader = websocket.Upgrader{} // use defaults
 
-	s, err := serial.OpenPort(c)
+func newSerialConn(name string, baud int) *serial.Config {
+	return &serial.Config{
+		Name: name,
+		Baud: baud,
+	}
+}
+
+func main() {
+	c0 := newSerialConn("/dev/cu.usbmodem14301", 9600)
+	//c1 := newSerialConn("/dev/cu.usbmodem14301", 9601)
+	//c2 := newSerialConn("/dev/cu.usbmodem14301", 9602)
+
+	s, err := serial.OpenPort(c0)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,13 +39,16 @@ func main() {
 	}()
 
 	http.HandleFunc("/ws", func(writer http.ResponseWriter, request *http.Request) {
-		conn, err := upgrader.Upgrade(w, r, nil)
+		_, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
-		client := &Client{conn: conn, send: make(chan []byte, 256)}
-
+		//client := &Client{conn: conn, send: make(chan []byte, 256)}
 	})
+
+	if err := http.ListenAndServe(":4000", nil); err != nil {
+		log.Fatal(err)
+	}
 }
