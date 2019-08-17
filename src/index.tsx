@@ -4,15 +4,17 @@ import ReactDOM from 'react-dom';
 import './utils/styles/global-styles.css';
 import * as serviceWorker from './services/serviceWorker';
 
-// stubbed arduino response - TODO: stub this in test
-// A represents blue nodes
-const arduinoResp = "A";
+// const ws = new WebSocket("ws://0.0.0.0:8000")
+
+// ws.onopen = () => {
+//     // connected
+// }
 
 ReactDOM.render(
     <App 
         width={800}
         height={600}
-        resp={arduinoResp}
+        // ws={ws}
     />,
     document.getElementById('root')
 );

@@ -21,7 +21,6 @@ export default {
         // { id: "C4", group: 3 },
         // { id: "C5", group: 3 },
         // { id: "C6", group: 3 },
-
     ],
     links: [
         // { source: "ARDUINO A", target: "ARDUINO B", value: 1 },

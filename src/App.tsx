@@ -1,19 +1,23 @@
-import './utils/styles/App.css';
-import React, { FC } from 'react';
+import 'utils/styles/App.css';
+import React, { FC, useEffect, useState } from 'react';
 import { Header, Footer, TreeNity } from "components/index";
 
 interface IProps {
   width: number
   height: number
-  resp: respType
+  // ws: WebSocket
 }
 
-type respType =
-| "A"
-| "B"
-| "C"
+const App: FC<IProps> = ({ width, height }) => {
+  const [resp, setResp] = useState<respType>("A")
 
-const App: FC<IProps> = ({ width, height, resp }) => {
+  // useEffect(() => {
+  //   ws.onmessage = (data) => {
+  //     // TODO: transform into letter here
+  //     // setResp(data)
+  //   }
+  // }, [])
+
   return (
     <div className="App">
       <Header />

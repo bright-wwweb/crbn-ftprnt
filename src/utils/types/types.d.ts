@@ -4,8 +4,8 @@ type d3Node = {
 } & SimulationNodeDatum;
 
 type d3Link = {
-    source: string,
-    target: string,
+    parent: string,
+    self: string,
     value: number,
 };
 
@@ -14,3 +14,7 @@ type d3Graph = {
     links: d3Link[],
 };
 
+type respType =
+| "A"
+| "B"
+| "C"

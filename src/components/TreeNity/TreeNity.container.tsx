@@ -9,17 +9,13 @@ interface Props {
   resp: respType
 }
 
-type respType =
-| "A"
-| "B"
-| "C"
-
 interface State { }
-
 
 const TreeNity: FC<Props> = ({width, height, resp}) => {
   const[graph, setGraph] = useState<d3Graph>({ nodes: [], links: [] });
-  const [treeState, setTreeState] = useState<any>({
+  const[parent, setParent] = useState<number | null>(null);
+  const[currNode, setCurrNode] = useState<number>(0);
+  const [treeState] = useState<any>({
     A: {},
     B: {},
     C: {}
@@ -43,16 +39,16 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
     function ticked() {
       link
         .attr("x1", function (d: any) {
-          return d.source.x
+          return d.parent.x
         })
         .attr("y1", function (d: any) {
-          return d.source.y
+          return d.parent.y
         })
         .attr("x2", function (d: any) {
-          return d.target.x
+          return d.self.x
         })
         .attr("y2", function (d: any) {
-          return d.target.y
+          return d.self.y
         })
 
       node
@@ -70,31 +66,69 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
         .attr("y", function (d: any) {
           return d.y + 5;
         })
-    }
-
-    simulation.nodes(graph.nodes).on("tick", ticked)
+      }
+      
+      simulation.nodes(graph.nodes).on("tick", ticked)
+      _handleNewResponse();
+      _createNodeEntry();
+      _createLinkEntry();
   })
 
   const _handleNewResponse = () => {
-    const nodeId = Object.keys(treeState[resp]).length
-    let [parent, leftChild, rightChild]: any = [null, null, null]
-    if (nodeId > 0) {
-      for (let i = 0; i < nodeId; i++) {
+    setCurrNode(Object.keys(treeState[resp]).length);
+    let [leftChild, rightChild]: any = [null, null]
+    if (currNode > 0) {
+      for (let i = 0; i < currNode; i++) {
         let node = treeState[resp][i]
         if (!node.leftChild) {
-          node.leftChild = nodeId
-          parent = i
+          node.leftChild = currNode
+          setParent(i)
         } else if (!node.rightChild) {
-          node.rightChild = nodeId
-          parent = i
+          node.rightChild = currNode
+          setParent(i)
         }
       }
     }
-    treeState[resp][nodeId] = {
+    treeState[resp][currNode] = {
       parent,
       leftChild,
       rightChild,
     }
+  }
+
+  // resp is (A, B, or C) & it represents the tree that is being updated
+  // nodeIds is list of nodeIds that were updated (parent and new treeState entry)
+  const _createNodeEntry = () => {
+    // returnval should look like: 
+    // { id: "ARDUINO A", group: 1 },
+    let group;
+    switch (resp) {
+      case "A":
+        group = 1; break
+      case "B":
+        group = 2; break
+      case "C":
+        group = 3; break
+      default:
+        throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for resp: ${resp}`)
+    }
+    graph.nodes.push({
+      id: `${resp}${currNode}`,
+      group
+    });
+
+    setGraph(graph)
+  }
+
+  const _createLinkEntry = () => {
+    graph.links.push(
+      {
+        parent: `${resp}${parent}`,
+        self: `${resp}${currNode}`,
+        value: 1
+      }
+    )
+    setGraph(graph);
   }
 
   return (
