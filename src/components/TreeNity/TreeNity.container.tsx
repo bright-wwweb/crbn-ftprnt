@@ -9,8 +9,6 @@ interface Props {
   // resp: respType
 }
 
-interface State { }
-
 const TreeNity: FC<Props> = ({width, height}) => {
   const[graph, setGraph] = useState<d3Graph>({ nodes: [], links: [] });
   const[source, setSource] = useState<number | null>(null);
@@ -108,10 +106,7 @@ const TreeNity: FC<Props> = ({width, height}) => {
   }
 
   // resp is (A, B, or C) & it represents the tree that is being updated
-  // nodeIds is list of nodeIds that were updated (source and new treeState entry)
   function _createNodeEntry() {
-    // returnval should look like: 
-    // { id: "ARDUINO A", group: 1 },
     let group;
     switch (resp) {
       case "A":
