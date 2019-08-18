@@ -9,17 +9,36 @@ interface Props {
   // resp: respType
 }
 
-const TreeNity: FC<Props> = ({width, height}) => {
-  const[graph, setGraph] = useState<d3Graph>({ nodes: [], links: [] });
-  const[source, setSource] = useState<number | null>(null);
-  const[target, setTarget] = useState<number>(0)
-  const [resp, setResp] = useState<respType>("A")
+// custom hook that combines useState with local storage check
+const useStateOrLocalStorage = (localStorageKey: string, initialValue: any) => {
+  const [value, setValue] = useState(
+    JSON.parse(localStorage.getItem(localStorageKey)) || initialValue
+  );
+  useEffect(() => {
+    localStorage.setItem(localStorageKey, JSON.stringify(value))
+  }, [value]);
 
-  const [treeState, setTreeState] = useState<any>({
+  return [value, setValue];
+};
+
+const TreeNity: FC<Props> = ({width, height}) => {
+  const[graph, setGraph] = useStateOrLocalStorage("graph", { nodes: [], links: [] })
+  const[source, setSource] = useStateOrLocalStorage("source", null);
+  const[target, setTarget] = useStateOrLocalStorage("target", 0)
+  const [resp, setResp] = useStateOrLocalStorage("resp", "A")
+  const [treeState, setTreeState] = useStateOrLocalStorage("treeState", {
     A: {},
     B: {},
     C: {}
   });
+  // const[source, setSource] = useState<number | null>(null);
+  // const[target, setTarget] = useState<number>(0)
+  // const [resp, setResp] = useState<respType>("A")
+  // const [treeState, setTreeState] = useState<any>({
+  //   A: {},
+  //   B: {},
+  //   C: {}
+  // });
 
   let simulation: any = d3.forceSimulation(graph.nodes)
     .force("link", d3.forceLink().id(function (d: any) {
@@ -31,7 +50,6 @@ const TreeNity: FC<Props> = ({width, height}) => {
   simulation.force("link").links(graph.links)
 
   useEffect(() => {
-    _createNodeEntry()
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
     const label = d3.selectAll(".label");
@@ -66,7 +84,6 @@ const TreeNity: FC<Props> = ({width, height}) => {
           return d.y + 5;
         })
       }
-
     simulation.nodes(graph.nodes).on("tick", ticked)
     simulation.force("link").links(graph.links)
   }, [target])
@@ -103,10 +120,12 @@ const TreeNity: FC<Props> = ({width, height}) => {
     setTreeState(newT)
     // FOR TESTING ONLY:
     setResp(manualResp)
+    _createNodeEntry()
   }
 
   // resp is (A, B, or C) & it represents the tree that is being updated
   function _createNodeEntry() {
+    console.log(target)
     let group;
     switch (resp) {
       case "A":
