@@ -9,19 +9,31 @@ interface IProps {
 }
 
 const App: FC<IProps> = ({ width, height, ws }) => {
-  const [resp, setResp] = useState<respType>("")
+  const [signal, setSignal] = useState<signalType>(null)
+  const [signalCount, setSignalCount] = useState<number>(0)
   useEffect(() => {
     ws.onmessage = (e) => {
       if(e.data !== "") {
-        setResp(e.data)
+        setSignal(e.data)
+        setSignalCount(signalCount+1)
       }
     }
   }, [])
 
+  const handleClickSignal = (signal: signalType) => {
+    setSignal(signal)
+    setSignalCount(signalCount+1)
+  }
+
   return (
     <div className="App">
       <Header />
-      <TreeNity width={width} height={height} resp={resp}/>
+      <TreeNity 
+        width={width} 
+        height={height} 
+        signal={signal} 
+        signalCount={signalCount}
+        handleClickSignal={handleClickSignal}/>
       <Footer />
     </div>
   )
