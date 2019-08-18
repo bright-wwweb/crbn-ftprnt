@@ -6,10 +6,10 @@ import { Links, Nodes, Labels } from 'components/index';
 interface Props {
   width: number
   height: number
-  // resp: respType
+  resp: respType
 }
 
-const TreeNity: FC<Props> = ({width, height}) => {
+const TreeNity: FC<Props> = ({width, height, resp}) => {
   const[graph, setGraph] = useState<d3Graph>({ nodes: [
     {
       id: "ORIGIN",
@@ -18,7 +18,6 @@ const TreeNity: FC<Props> = ({width, height}) => {
   ], links: [] });
   const[source, setSource] = useState<number | null>(null);
   const[target, setTarget] = useState<number>(0)
-  const [resp, setResp] = useState<respType>("A")
 
   const [treeState, setTreeState] = useState<any>({
     A: {},
@@ -35,6 +34,12 @@ const TreeNity: FC<Props> = ({width, height}) => {
   simulation.force("link").links(graph.links)
 
   useEffect(() => {
+    _handleNewResponse(resp)
+  }, [resp])
+
+  useEffect(() => {
+    // if (graph.nodes[0].x === 0) {
+    // console.log(graph)
     _createNodeEntry()
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
@@ -69,44 +74,48 @@ const TreeNity: FC<Props> = ({width, height}) => {
         .attr("y", function (d: any) {
           return d.y + 5;
         })
-      }
+    }
 
     simulation.nodes(graph.nodes).on("tick", ticked)
     simulation.force("link").links(graph.links)
+    // }
   }, [target])
 
-  function _handleNewResponse(manualResp: respType) {
-    const newTargetId = Object.keys(treeState[manualResp]).length
-    let [leftChild, rightChild, newSourceId]: any = [null, null, null]
-    if (newTargetId > 0) {
-      // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
-      for (let i = 0; i < newTargetId; i++) {
-        let node = treeState[manualResp][i]
-        if (!node.leftChild) {
-          node.leftChild = newTargetId
-          newSourceId = i;
-          break
-        } else if (!node.rightChild) {
-          node.rightChild = newTargetId
-          newSourceId = i;
-          break
+  function _handleNewResponse(resp: respType) {
+    console.log(resp)
+    if (resp !== "") {
+      const newTargetId = Object.keys(treeState[resp]).length
+      let [leftChild, rightChild, newSourceId]: any = [null, null, null]
+      if (newTargetId > 0) {
+        // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
+        for (let i = 0; i < newTargetId; i++) {
+          let node = treeState[resp][i]
+          if (!node.leftChild) {
+            node.leftChild = newTargetId
+            newSourceId = i;
+            break
+          } else if (!node.rightChild) {
+            node.rightChild = newTargetId
+            newSourceId = i;
+            break
+          }
         }
       }
+      const targetObj = {
+        source: newSourceId,
+        leftChild,
+        rightChild,
+      }
+      const newT = {
+        ...treeState,
+        [resp]: { ...treeState[resp], [newTargetId]: targetObj }
+      }
+      console.log("NEWTARGET", resp, newTargetId, newT)
+      setSource(newSourceId)
+      setTarget(newTargetId)
+      setTreeState(newT)
+      _createNodeEntry()
     }
-    const targetObj = {
-      source: newSourceId,
-      leftChild,
-      rightChild,
-    }
-    const newT = {
-      ...treeState,
-      [resp]: { ...treeState[resp], [newTargetId]: targetObj }
-    }
-    setSource(newSourceId)
-    setTarget(newTargetId)
-    setTreeState(newT)
-    // FOR TESTING ONLY:
-    setResp(manualResp)
   }
 
   // resp is (A, B, or C) & it represents the tree that is being updated
@@ -119,15 +128,25 @@ const TreeNity: FC<Props> = ({width, height}) => {
         group = 2; break
       case "C":
         group = 3; break
+      case "": 
+        break;
       default:
         throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for resp: ${resp}`)
     }
-    const newGraph = {
-      nodes: graph.nodes.concat({
-        id: `${resp}${target}`,
-        group}),
-      links: _createLinkEntry()
+    let newGraph;
+    console.log(resp)
+    if (resp !== "") {
+      newGraph = {
+        nodes: graph.nodes.concat({
+          id: `${resp}${target}`,
+          group}),
+        links: _createLinkEntry()
+      }
+    } else {
+      newGraph = graph
     }
+
+    console.log("LINKS", newGraph)
     simulation.stop()
     setGraph(newGraph)
     simulation.restart()
@@ -156,9 +175,7 @@ const TreeNity: FC<Props> = ({width, height}) => {
 
   return (
     <>
-      <button onClick={() => {_handleNewResponse("A")}}>ADD BLUE NODE</button>
-      <button onClick={() => {_handleNewResponse("B")}}>ADD ANOTHER NODE</button>
-      <button onClick={() => {_handleNewResponse("C")}}>ADD LAST NODE</button>
+      <button>ADD BLUE NODE</button>
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links} />
         <Nodes nodes={graph.nodes} />

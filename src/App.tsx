@@ -9,20 +9,19 @@ interface IProps {
 }
 
 const App: FC<IProps> = ({ width, height, ws }) => {
-  // const [resp, setResp] = useState<respType>("A")
-
-    useEffect(() => {
-        ws.onmessage = (event) => {
-            console.log(event.data);
-            // TODO: transform into letter here
-            // setResp(data)
-        }
-    }, [])
+  const [resp, setResp] = useState<respType>("")
+  useEffect(() => {
+    ws.onmessage = (e) => {
+      if(e.data !== "") {
+        setResp(e.data)
+      }
+    }
+  }, [])
 
   return (
     <div className="App">
       <Header />
-      <TreeNity width={width} height={height}/>
+      <TreeNity width={width} height={height} resp={resp}/>
       <Footer />
     </div>
   )
