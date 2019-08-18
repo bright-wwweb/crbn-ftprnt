@@ -27,12 +27,13 @@ const TreeNity: FC<Props> = ({
   width, height, signal, signalCount, handleClickSignal
 }) => {
 
+  // constants
+
   const [graph, setGraph] = useState<d3Graph>({
     nodes: [{
       id: "ORIGIN",
       group: 4
-    }
-    ],
+    }],
     links: [],
   });
 
@@ -45,6 +46,8 @@ const TreeNity: FC<Props> = ({
     C: {},
   });
 
+  // simulation
+
   let simulation: any = d3.forceSimulation(graph.nodes)
     .force("link", d3.forceLink().id(function(d: any) {
       return d.id
@@ -54,11 +57,21 @@ const TreeNity: FC<Props> = ({
 
   simulation.force("link").links(graph.links)
 
+  // useEffects
+  
   useEffect(() => {
     if (signal) {
       _handleNewSignal()
     }
+    console.log('signalCount', signalCount)
   }, [signalCount])
+
+  useEffect(() => {
+    if (signal) {
+      _createNodeEntry()
+    }
+    console.log(graph)
+  }, [treeState])
 
   useEffect(() => {
     const node = d3.selectAll(".node")
@@ -100,9 +113,12 @@ const TreeNity: FC<Props> = ({
     simulation.force("link").links(graph.links)
   }, [target])
 
+  // methods
+
   function _handleNewSignal() {
     const newTargetId = Object.keys(treeState[signal]).length
-    let [leftChild, rightChild, newSourceId]: any = [null, null, null]
+    let [newSourceId, leftChild, rightChild]: any = [null, null, null]
+
     if (newTargetId > 0) {
       // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
       for (let i = 0; i < newTargetId; i++) {
@@ -124,8 +140,7 @@ const TreeNity: FC<Props> = ({
       leftChild,
       rightChild,
     }
-
-    const newT = {
+    const newTree = {
       ...treeState,
       [signal]: {
         ...treeState[signal],
@@ -135,41 +150,29 @@ const TreeNity: FC<Props> = ({
 
     setSource(newSourceId)
     setTarget(newTargetId)
-    setTreeState(newT)
-    _createNodeEntry()
+    setTreeState(newTree)
   }
 
   // signal is (A, B, or C) & it represents the tree that is being updated
   function _createNodeEntry() {
     let group: number
-    let newGraph: d3Graph
 
     switch (signal) {
       case "A":
-        group = 1;
-        break
+        group = 1; break
       case "B":
-        group = 2;
-        break
+        group = 2; break
       case "C":
-        group = 3;
-        break
+        group = 3; break
       default:
         throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for signal: ${signal}`)
     }
-
-    if (signal) {
-      newGraph = {
-        nodes: graph.nodes.concat({
-          id: `${signal}${target}`,
-          group,
-        }),
-        links: _createLinkEntry()
-      }
-    } else {
-      newGraph = graph
+    const newGraph = {
+      nodes: graph.nodes.concat({
+        id: `${signal}${target}`,
+        group}),
+      links: _createLinkEntry()
     }
-
     simulation.stop()
     setGraph(newGraph)
     simulation.restart()
@@ -205,8 +208,8 @@ const TreeNity: FC<Props> = ({
       </svg>
       <div id="btn-container">
         <button onClick={() => {handleClickSignal("A")}}>ADD BLUE NODE</button>
-        <button onClick={() => {handleClickSignal("B")}}>ADD RED NODE</button>
-        <button onClick={() => {handleClickSignal("C")}}>ADD GREEN NODE</button>
+        <button onClick={() => {handleClickSignal("B")}}>ADD GREEN NODE</button>
+        <button onClick={() => {handleClickSignal("C")}}>ADD RED NODE</button>
       </div>
     </div>
   )
