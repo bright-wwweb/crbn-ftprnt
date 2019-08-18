@@ -12,8 +12,8 @@ import * as serviceWorker from './services/serviceWorker';
 
 ReactDOM.render(
     <App 
-        width={800}
-        height={600}
+        width={1270}
+        height={690}
         // ws={ws}
     />,
     document.getElementById('root')

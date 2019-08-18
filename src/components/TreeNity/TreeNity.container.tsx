@@ -10,7 +10,12 @@ interface Props {
 }
 
 const TreeNity: FC<Props> = ({width, height}) => {
-  const[graph, setGraph] = useState<d3Graph>({ nodes: [], links: [] });
+  const[graph, setGraph] = useState<d3Graph>({ nodes: [
+    {
+      id: "ORIGIN",
+      group: 4
+    }
+  ], links: [] });
   const[source, setSource] = useState<number | null>(null);
   const[target, setTarget] = useState<number>(0)
   const [resp, setResp] = useState<respType>("A")
@@ -18,7 +23,7 @@ const TreeNity: FC<Props> = ({width, height}) => {
   const [treeState, setTreeState] = useState<any>({
     A: {},
     B: {},
-    C: {}
+    C: {},
   });
 
   let simulation: any = d3.forceSimulation(graph.nodes)
@@ -27,7 +32,6 @@ const TreeNity: FC<Props> = ({width, height}) => {
     }))
   .force("charge", d3.forceManyBody().strength(-100))
   .force("center", d3.forceCenter(width / 2, height / 2))
-
   simulation.force("link").links(graph.links)
 
   useEffect(() => {
@@ -52,10 +56,10 @@ const TreeNity: FC<Props> = ({width, height}) => {
         })
       node
         .attr("cx", function (d: any) {
-          return d.x
+          return d.x = Math.max(5, Math.min(width - 5, d.x))
         })
         .attr("cy", function (d: any) {
-          return d.y
+          return d.y = Math.max(5, Math.min(height - 5, d.y))
         })
 
       label
@@ -140,7 +144,13 @@ const TreeNity: FC<Props> = ({width, height}) => {
         }
       )
     } else {
-      return graph.links
+      return graph.links.concat(
+        {
+          source: "ORIGIN",
+          target: `${resp}${target}`,
+          value: 1
+        }
+      )
     }
   }
 
