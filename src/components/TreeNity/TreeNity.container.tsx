@@ -29,12 +29,13 @@ const TreeNity: FC<Props> = ({
 
   // constants
 
-  const [graph, setGraph] = useState<d3Graph>({ nodes: [
-    {
+  const [graph, setGraph] = useState<d3Graph>({
+    nodes: [{
       id: "ORIGIN",
       group: 4
-    }
-  ], links: [] });
+    }],
+    links: [],
+  });
 
   const [source, setSource] = useState<number | null>(null);
   const [target, setTarget] = useState<number>(0)
@@ -48,7 +49,7 @@ const TreeNity: FC<Props> = ({
   // simulation
 
   let simulation: any = d3.forceSimulation(graph.nodes)
-    .force("link", d3.forceLink().id(function (d: any) {
+    .force("link", d3.forceLink().id(function(d: any) {
       return d.id
     }))
     .force("charge", d3.forceManyBody().strength(-100))
@@ -79,31 +80,31 @@ const TreeNity: FC<Props> = ({
 
     function ticked() {
       link
-        .attr("x1", function (d: any) {
+        .attr("x1", function(d: any) {
           return d.source.x
         })
-        .attr("y1", function (d: any) {
+        .attr("y1", function(d: any) {
           return d.source.y
         })
-        .attr("x2", function (d: any) {
+        .attr("x2", function(d: any) {
           return d.target.x
         })
-        .attr("y2", function (d: any) {
+        .attr("y2", function(d: any) {
           return d.target.y
         })
       node
-        .attr("cx", function (d: any) {
+        .attr("cx", function(d: any) {
           return d.x = Math.max(5, Math.min(width - 5, d.x))
         })
-        .attr("cy", function (d: any) {
+        .attr("cy", function(d: any) {
           return d.y = Math.max(5, Math.min(height - 5, d.y))
         })
 
       label
-        .attr("x", function (d: any) {
+        .attr("x", function(d: any) {
           return d.x + 5;
         })
-        .attr("y", function (d: any) {
+        .attr("y", function(d: any) {
           return d.y + 5;
         })
     }
@@ -133,6 +134,7 @@ const TreeNity: FC<Props> = ({
         }
       }
     }
+
     const targetObj = {
       source: newSourceId,
       leftChild,
@@ -140,8 +142,12 @@ const TreeNity: FC<Props> = ({
     }
     const newTree = {
       ...treeState,
-      [signal]: { ...treeState[signal], [newTargetId]: targetObj }
+      [signal]: {
+        ...treeState[signal],
+        [newTargetId]: targetObj
+      }
     }
+
     setSource(newSourceId)
     setTarget(newTargetId)
     setTreeState(newTree)
@@ -149,7 +155,8 @@ const TreeNity: FC<Props> = ({
 
   // signal is (A, B, or C) & it represents the tree that is being updated
   function _createNodeEntry() {
-    let group;
+    let group: number
+
     switch (signal) {
       case "A":
         group = 1; break
@@ -193,16 +200,18 @@ const TreeNity: FC<Props> = ({
   }
 
   return (
-    <>
-      <button onClick={() => {handleClickSignal("A")}}>ADD BLUE NODE</button>
-      <button onClick={() => {handleClickSignal("B")}}>ADD GREEN NODE</button>
-      <button onClick={() => {handleClickSignal("C")}}>ADD RED NODE</button>
+    <div id="viz-container">
       <svg className="viz-mount" width={width} height={height}>
-        <Links links={graph.links} />
-        <Nodes nodes={graph.nodes} />
-        <Labels nodes={graph.nodes} />
+        <Links links={graph.links}/>
+        <Nodes nodes={graph.nodes}/>
+        <Labels nodes={graph.nodes}/>
       </svg>
-    </>
+      <div id="btn-container">
+        <button onClick={() => {handleClickSignal("A")}}>ADD BLUE NODE</button>
+        <button onClick={() => {handleClickSignal("B")}}>ADD GREEN NODE</button>
+        <button onClick={() => {handleClickSignal("C")}}>ADD RED NODE</button>
+      </div>
+    </div>
   )
 };
 
