@@ -6,32 +6,34 @@ import { Links, Nodes, Labels } from 'components/index';
 interface Props {
   width: number
   height: number
-  resp: respType
+  // resp: respType
 }
 
 interface State { }
 
-const TreeNity: FC<Props> = ({width, height, resp}) => {
+const TreeNity: FC<Props> = ({width, height}) => {
   const[graph, setGraph] = useState<d3Graph>({ nodes: [], links: [] });
   const[source, setSource] = useState<number | null>(null);
-  const[target, setTarget] = useState<number>(0);
+  const[target, setTarget] = useState<number>(0)
+  const [resp, setResp] = useState<respType>("A")
+
   const [treeState, setTreeState] = useState<any>({
     A: {},
     B: {},
     C: {}
   });
 
-  let simulation: any = d3.forceSimulation()
+  let simulation: any = d3.forceSimulation(graph.nodes)
     .force("link", d3.forceLink().id(function (d: any) {
       return d.id
     }))
-    .force("charge", d3.forceManyBody().strength(-75))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .nodes(graph.nodes)
+  .force("charge", d3.forceManyBody().strength(-100))
+  .force("center", d3.forceCenter(width / 2, height / 2))
 
   simulation.force("link").links(graph.links)
 
   useEffect(() => {
+    _createNodeEntry()
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
     const label = d3.selectAll(".label");
@@ -39,18 +41,17 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
     function ticked() {
       link
         .attr("x1", function (d: any) {
-          return d.parent.x
+          return d.source.x
         })
         .attr("y1", function (d: any) {
-          return d.parent.y
+          return d.source.y
         })
         .attr("x2", function (d: any) {
-          return d.self.x
+          return d.target.x
         })
         .attr("y2", function (d: any) {
-          return d.self.y
+          return d.target.y
         })
-
       node
         .attr("cx", function (d: any) {
           return d.x
@@ -68,16 +69,17 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
         })
       }
 
-      simulation.nodes(graph.nodes).on("tick", ticked)
-  })
+    simulation.nodes(graph.nodes).on("tick", ticked)
+    simulation.force("link").links(graph.links)
+  }, [target, source])
 
-  function _handleNewResponse() {
-    const newTargetId = Object.keys(treeState[resp]).length
+  function _handleNewResponse(manualResp: respType) {
+    const newTargetId = Object.keys(treeState[manualResp]).length
     let [leftChild, rightChild, newSourceId]: any = [null, null, null]
     if (newTargetId > 0) {
       // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
       for (let i = 0; i < newTargetId; i++) {
-        let node = treeState[resp][i]
+        let node = treeState[manualResp][i]
         if (!node.leftChild) {
           node.leftChild = newTargetId
           newSourceId = i;
@@ -101,10 +103,12 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
     setSource(newSourceId)
     setTarget(newTargetId)
     setTreeState(newT)
+    // FOR TESTING ONLY:
+    setResp(manualResp)
   }
 
   // resp is (A, B, or C) & it represents the tree that is being updated
-  // nodeIds is list of nodeIds that were updated (parent and new treeState entry)
+  // nodeIds is list of nodeIds that were updated (source and new treeState entry)
   function _createNodeEntry() {
     // returnval should look like: 
     // { id: "ARDUINO A", group: 1 },
@@ -119,31 +123,40 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
       default:
         throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for resp: ${resp}`)
     }
-    graph.nodes.push({
-      id: `${resp}${target}`,
-      group
-    });
-
-    setGraph(graph)
+    const newGraph = {
+      nodes: graph.nodes.concat({
+        id: `${resp}${target}`,
+        group}),
+      links: _createLinkEntry()
+    }
+    simulation.stop()
+    setGraph(newGraph)
+    simulation.restart()
+    simulation.alpha(1)
   }
 
   function _createLinkEntry() {
-    graph.links.push(
-      {
-        source: `${resp}${source}`,
-        target: `${resp}${target}`,
-        value: 1
-      }
-    )
-    setGraph(graph);
+    if (source !== null) {
+      return graph.links.concat(
+        {
+          source: `${resp}${source}`,
+          target: `${resp}${target}`,
+          value: 1
+        }
+      )
+    } else {
+      return graph.links
+    }
   }
 
   return (
     <>
-      <button onClick={_handleNewResponse}>ADD NODE</button>
+      <button onClick={() => {_handleNewResponse("A")}}>ADD BLUE NODE</button>
+      <button onClick={() => {_handleNewResponse("B")}}>ADD ANOTHER NODE</button>
+      <button onClick={() => {_handleNewResponse("C")}}>ADD LAST NODE</button>
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links} />
-        <Nodes nodes={graph.nodes} simulation={simulation} />
+        <Nodes nodes={graph.nodes} />
         <Labels nodes={graph.nodes} />
       </svg>
     </>

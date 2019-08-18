@@ -9,7 +9,7 @@ interface IProps {
 }
 
 const App: FC<IProps> = ({ width, height }) => {
-  const [resp, setResp] = useState<respType>("A")
+  // const [resp, setResp] = useState<respType>("A")
 
   // useEffect(() => {
   //   ws.onmessage = (data) => {
@@ -21,7 +21,7 @@ const App: FC<IProps> = ({ width, height }) => {
   return (
     <div className="App">
       <Header />
-      <TreeNity width={width} height={height} resp={resp}/>
+      <TreeNity width={width} height={height}/>
       <Footer />
     </div>
   )
