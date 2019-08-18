@@ -1,12 +1,21 @@
+import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import data from './data';
+import './utils/styles/global-styles.css';
+import * as serviceWorker from './services/serviceWorker';
+
+// const ws = new WebSocket("ws://0.0.0.0:8000")
+
+// ws.onopen = () => {
+//     // connected
+// }
 
 ReactDOM.render(
-    <App width={800} height={600} graph={data} />,
+    <App 
+        width={800}
+        height={600}
+        // ws={ws}
+    />,
     document.getElementById('root')
 );
 
