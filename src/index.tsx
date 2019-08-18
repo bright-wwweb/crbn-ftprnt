@@ -4,17 +4,18 @@ import ReactDOM from 'react-dom';
 import './utils/styles/global-styles.css';
 import * as serviceWorker from './services/serviceWorker';
 
-// const ws = new WebSocket("ws://0.0.0.0:8000")
+const ws = new WebSocket("ws://192.168.50.3:4000/ws")
 
-// ws.onopen = () => {
-//     // connected
-// }
+ws.onopen = () => {
+    // connected
+    console.log('WS OPENED')
+}
 
 ReactDOM.render(
     <App 
-        width={800}
-        height={600}
-        // ws={ws}
+        width={1270}
+        height={690}
+        ws={ws}
     />,
     document.getElementById('root')
 );
