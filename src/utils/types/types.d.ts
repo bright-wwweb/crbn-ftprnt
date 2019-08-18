@@ -18,3 +18,4 @@ type respType =
 | "A"
 | "B"
 | "C"
+| ""
