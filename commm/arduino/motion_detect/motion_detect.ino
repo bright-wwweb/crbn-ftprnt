@@ -17,7 +17,7 @@ int ledPin = 13;
 /////////////////////////////
 //SETUP
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
   pinMode(pirPin, INPUT);
   pinMode(ledPin, OUTPUT);
   digitalWrite(pirPin, LOW);
@@ -42,7 +42,7 @@ void loop() {
     if (lockLow) {
       //makes sure we wait for a transition to LOW before any further output is made:
       lockLow = false;
-      Serial.println("A_HIGH");
+      Serial.println("C");
       delay(50);
     }
     takeLowTime = true;
@@ -61,7 +61,7 @@ void loop() {
       //makes sure this block of code is only executed again after
       //a new motion sequence has been detected
       lockLow = true;
-      Serial.println("A_LOW");
+//      Serial.println("A_LOW");
       delay(50);
     }
   }

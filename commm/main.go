@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"github.com/gorilla/websocket"
 	"github.com/tarm/serial"
 	"log"
@@ -8,7 +9,16 @@ import (
 	"time"
 )
 
-var upgrader = websocket.Upgrader{} // use defaults
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+var (
+	newline = []byte{'\n'}
+	space   = []byte{' '}
+)
 
 type Hub struct {
 	// register clients
@@ -72,7 +82,7 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
-			c.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			c.conn.SetWriteDeadline(time.Now().Add(time.Second))
 			if !ok {
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
@@ -105,7 +115,7 @@ func newSerialConn(name string, baud int) *serial.Config {
 	}
 }
 
-func serialListen(c *serial.Config) {
+func serialListen(signal string, c *serial.Config, h *Hub) {
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		log.Fatal(err)
@@ -119,6 +129,8 @@ func serialListen(c *serial.Config) {
 		}
 
 		log.Printf("%s\n", string(buf[:n]))
+		message := bytes.TrimSpace(bytes.Replace([]byte(signal), newline, space, -1))
+		h.broadcast <- message
 	}
 }
 
@@ -129,7 +141,6 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request)  {
 		return
 	}
 
-	w.Write([]byte("pong"))
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
 	client.hub.register <- client
 
@@ -137,14 +148,16 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request)  {
 }
 
 func main() {
-	c0 := newSerialConn("/dev/cu.usbmodem14301", 9600)
-	//c1 := newSerialConn("/dev/cu.usbmodem14301", 9601)
-	//c2 := newSerialConn("/dev/cu.usbmodem14301", 9602)
-
-	go serialListen(c0)
+	c0 := newSerialConn("/dev/cu.usbmodem1D13101", 9600)
+	c1 := newSerialConn("/dev/cu.usbmodem1D13201", 19200)
+	c2 := newSerialConn("/dev/cu.usbmodem1D13301", 38400)
 
 	hub := newHub()
 	go hub.run()
+
+	go serialListen("A", c0, hub)
+	go serialListen("B", c1, hub)
+	go serialListen("C", c2, hub)
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))

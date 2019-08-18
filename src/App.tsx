@@ -5,18 +5,19 @@ import { Header, Footer, TreeNity } from "components/index";
 interface IProps {
   width: number
   height: number
-  // ws: WebSocket
+  ws: WebSocket
 }
 
-const App: FC<IProps> = ({ width, height }) => {
+const App: FC<IProps> = ({ width, height, ws }) => {
   // const [resp, setResp] = useState<respType>("A")
 
-  // useEffect(() => {
-  //   ws.onmessage = (data) => {
-  //     // TODO: transform into letter here
-  //     // setResp(data)
-  //   }
-  // }, [])
+    useEffect(() => {
+        ws.onmessage = (event) => {
+            console.log(event.data);
+            // TODO: transform into letter here
+            // setResp(data)
+        }
+    }, [])
 
   return (
     <div className="App">
