@@ -76,16 +76,16 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	//c0 := newSerialConn("/dev/cu.usbmodem1D13101", 9600)
-	//c1 := newSerialConn("/dev/cu.usbmodem1D13201", 19200)
-	//c2 := newSerialConn("/dev/cu.usbmodem1D13301", 38400)
+	c0 := newSerialConn("/dev/cu.usbmodem1D13101", 9600)
+	c1 := newSerialConn("/dev/cu.usbmodem1D13201", 19200)
+	c2 := newSerialConn("/dev/cu.usbmodem1D13301", 38400)
 
 	hub := newHub()
 	go hub.run()
 
-	//go serialListen("A", c0, hub)
-	//go serialListen("B", c1, hub)
-	//go serialListen("C", c2, hub)
+	go serialListen("A", c0, hub)
+	go serialListen("B", c1, hub)
+	go serialListen("C", c2, hub)
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))
