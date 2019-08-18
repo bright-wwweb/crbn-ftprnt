@@ -12,7 +12,9 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   const [resp, setResp] = useState<respType>("")
   useEffect(() => {
     ws.onmessage = (e) => {
-      setResp(e.data)
+      if(e.data !== "") {
+        setResp(e.data)
+      }
     }
   }, [])
 

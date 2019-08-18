@@ -39,7 +39,7 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
 
   useEffect(() => {
     // if (graph.nodes[0].x === 0) {
-    console.log(graph)
+    // console.log(graph)
     _createNodeEntry()
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
@@ -114,6 +114,7 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
       setSource(newSourceId)
       setTarget(newTargetId)
       setTreeState(newT)
+      _createNodeEntry()
     }
   }
 
