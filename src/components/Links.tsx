@@ -9,7 +9,6 @@ interface ILinksProps {
     links: d3Link[]
 }
 
-
 const Link: React.FC<ILinkProps> = (props) => {
     const ref = useRef(null)
 

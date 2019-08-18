@@ -14,3 +14,7 @@ type d3Graph = {
     links: d3Link[],
 };
 
+type respType =
+| "A"
+| "B"
+| "C"
