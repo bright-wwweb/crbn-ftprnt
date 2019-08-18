@@ -14,8 +14,8 @@ type d3Graph = {
     links: d3Link[],
 };
 
-type respType =
+type signalType =
 | "A"
 | "B"
 | "C"
-| ""
+| null

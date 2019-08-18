@@ -6,16 +6,34 @@ import { Links, Nodes, Labels } from 'components/index';
 interface Props {
   width: number
   height: number
-  resp: respType
+  signal: signalType
+  signalCount: number
+  handleClickSignal: Function
 }
 
-const TreeNity: FC<Props> = ({width, height, resp}) => {
+// custom hook that combines useState with local storage check
+// const useStateOrLocalStorage = (localStorageKey: string, initialValue: any) => {
+//   const [value, setValue] = useState(
+//     JSON.parse(localStorage.getItem(localStorageKey)) || initialValue
+//   );
+//   useEffect(() => {
+//     localStorage.setItem(localStorageKey, JSON.stringify(value))
+//   }, [value]);
+
+//   return [value, setValue];
+// };
+
+const TreeNity: FC<Props> = ({
+  width, height, signal, signalCount, handleClickSignal
+}) => {
+
   const[graph, setGraph] = useState<d3Graph>({ nodes: [
     {
       id: "ORIGIN",
       group: 4
     }
   ], links: [] });
+
   const[source, setSource] = useState<number | null>(null);
   const[target, setTarget] = useState<number>(0)
 
@@ -29,18 +47,20 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
     .force("link", d3.forceLink().id(function (d: any) {
       return d.id
     }))
-  .force("charge", d3.forceManyBody().strength(-100))
-  .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("charge", d3.forceManyBody().strength(-100))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+
   simulation.force("link").links(graph.links)
 
   useEffect(() => {
-    _handleNewResponse(resp)
-  }, [resp])
+    if (signal) {
+      _handleNewSignal()
+    }
+  }, [signalCount])
 
   useEffect(() => {
     // if (graph.nodes[0].x === 0) {
     // console.log(graph)
-    _createNodeEntry()
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
     const label = d3.selectAll(".label");
@@ -81,64 +101,59 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
     // }
   }, [target])
 
-  function _handleNewResponse(resp: respType) {
-    console.log(resp)
-    if (resp !== "") {
-      const newTargetId = Object.keys(treeState[resp]).length
-      let [leftChild, rightChild, newSourceId]: any = [null, null, null]
-      if (newTargetId > 0) {
-        // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
-        for (let i = 0; i < newTargetId; i++) {
-          let node = treeState[resp][i]
-          if (!node.leftChild) {
-            node.leftChild = newTargetId
-            newSourceId = i;
-            break
-          } else if (!node.rightChild) {
-            node.rightChild = newTargetId
-            newSourceId = i;
-            break
-          }
+  function _handleNewSignal() {
+    const newTargetId = Object.keys(treeState[signal]).length
+    let [leftChild, rightChild, newSourceId]: any = [null, null, null]
+    if (newTargetId > 0) {
+      // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
+      for (let i = 0; i < newTargetId; i++) {
+        let node = treeState[signal][i]
+        if (!node.leftChild) {
+          node.leftChild = newTargetId
+          newSourceId = i;
+          break
+        } else if (!node.rightChild) {
+          node.rightChild = newTargetId
+          newSourceId = i;
+          break
         }
       }
-      const targetObj = {
-        source: newSourceId,
-        leftChild,
-        rightChild,
-      }
-      const newT = {
-        ...treeState,
-        [resp]: { ...treeState[resp], [newTargetId]: targetObj }
-      }
-      console.log("NEWTARGET", resp, newTargetId, newT)
-      setSource(newSourceId)
-      setTarget(newTargetId)
-      setTreeState(newT)
-      _createNodeEntry()
     }
+    const targetObj = {
+      source: newSourceId,
+      leftChild,
+      rightChild,
+    }
+    const newT = {
+      ...treeState,
+      [signal]: { ...treeState[signal], [newTargetId]: targetObj }
+    }
+    console.log("NEWTARGET", signal, newTargetId, newT)
+    setSource(newSourceId)
+    setTarget(newTargetId)
+    setTreeState(newT)
+    _createNodeEntry()
   }
 
-  // resp is (A, B, or C) & it represents the tree that is being updated
+  // signal is (A, B, or C) & it represents the tree that is being updated
   function _createNodeEntry() {
     let group;
-    switch (resp) {
+    switch (signal) {
       case "A":
         group = 1; break
       case "B":
         group = 2; break
       case "C":
         group = 3; break
-      case "": 
-        break;
       default:
-        throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for resp: ${resp}`)
+        throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for signal: ${signal}`)
     }
     let newGraph;
-    console.log(resp)
-    if (resp !== "") {
+    console.log(signal)
+    if (signal) {
       newGraph = {
         nodes: graph.nodes.concat({
-          id: `${resp}${target}`,
+          id: `${signal}${target}`,
           group}),
         links: _createLinkEntry()
       }
@@ -146,7 +161,7 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
       newGraph = graph
     }
 
-    console.log("LINKS", newGraph)
+    console.log("GRAPH", newGraph)
     simulation.stop()
     setGraph(newGraph)
     simulation.restart()
@@ -157,8 +172,8 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
     if (source !== null) {
       return graph.links.concat(
         {
-          source: `${resp}${source}`,
-          target: `${resp}${target}`,
+          source: `${signal}${source}`,
+          target: `${signal}${target}`,
           value: 1
         }
       )
@@ -166,7 +181,7 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
       return graph.links.concat(
         {
           source: "ORIGIN",
-          target: `${resp}${target}`,
+          target: `${signal}${target}`,
           value: 1
         }
       )
@@ -175,7 +190,9 @@ const TreeNity: FC<Props> = ({width, height, resp}) => {
 
   return (
     <>
-      <button>ADD BLUE NODE</button>
+      <button onClick={() => {handleClickSignal("A")}}>ADD BLUE NODE</button>
+      <button onClick={() => {handleClickSignal("B")}}>ADD RED NODE</button>
+      <button onClick={() => {handleClickSignal("C")}}>ADD GREEN NODE</button>
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links} />
         <Nodes nodes={graph.nodes} />
