@@ -69,7 +69,7 @@ const TreeNity: FC<Props> = ({width, height}) => {
 
     simulation.nodes(graph.nodes).on("tick", ticked)
     simulation.force("link").links(graph.links)
-  }, [target, source])
+  }, [target])
 
   function _handleNewResponse(manualResp: respType) {
     const newTargetId = Object.keys(treeState[manualResp]).length
