@@ -112,43 +112,41 @@ const TreeNity: FC<Props> = ({
   // methods
 
   function _handleNewSignal() {
-    if (signal) {
-      const newTargetId = Object.keys(treeState[signal]).length
-      let [newSourceId, leftChild, rightChild]: any = [null, null, null]
-  
-      if (newTargetId > 0) {
-        // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
-        for (let i = 0; i < newTargetId; i++) {
-          let node = treeState[signal][i]
-          if (!node.leftChild) {
-            node.leftChild = newTargetId
-            newSourceId = i;
-            break
-          } else if (!node.rightChild) {
-            node.rightChild = newTargetId
-            newSourceId = i;
-            break
-          }
+    const newTargetId = Object.keys(treeState[signal]).length
+    let [newSourceId, leftChild, rightChild]: any = [null, null, null]
+
+    if (newTargetId > 0) {
+      // FIXME: REFACTOR ME SO I'M NOT A FOR LOOP, BE MATHY :D
+      for (let i = 0; i < newTargetId; i++) {
+        let node = treeState[signal][i]
+        if (!node.leftChild) {
+          node.leftChild = newTargetId
+          newSourceId = i;
+          break
+        } else if (!node.rightChild) {
+          node.rightChild = newTargetId
+          newSourceId = i;
+          break
         }
       }
-  
-      const targetObj = {
-        source: newSourceId,
-        leftChild,
-        rightChild,
-      }
-      const newTree = {
-        ...treeState,
-        [signal]: {
-          ...treeState[signal],
-          [newTargetId]: targetObj
-        }
-      }
-      
-      setSource(newSourceId)
-      setTarget(newTargetId)
-      setTreeState(newTree)
     }
+
+    const targetObj = {
+      source: newSourceId,
+      leftChild,
+      rightChild,
+    }
+    const newTree = {
+      ...treeState,
+      [signal]: {
+        ...treeState[signal],
+        [newTargetId]: targetObj
+      }
+    }
+
+    setSource(newSourceId)
+    setTarget(newTargetId)
+    setTreeState(newTree)
   }
 
   // signal is (A, B, or C) & it represents the tree that is being updated
