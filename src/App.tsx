@@ -18,7 +18,7 @@ const App: FC<IProps> = ({ width, height, ws }) => {
         setSignalCount(signalCount+1)
       }
     }
-  }, [])
+  }, )
 
   const handleClickSignal = (signal: signalType) => {
     setSignal(signal)
@@ -28,10 +28,10 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   return (
     <div className="App">
       <Header />
-      <TreeNity 
-        width={width} 
-        height={height} 
-        signal={signal} 
+      <TreeNity
+        width={width}
+        height={height}
+        signal={signal}
         signalCount={signalCount}
         handleClickSignal={handleClickSignal}/>
       <Footer />

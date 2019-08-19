@@ -20,7 +20,7 @@ const Node: React.FC<INodeProps> = (props) => {
   const handleColor = () => {
     let color = props.color
     if (props.node.id === "ORIGIN") {
-      color = "d6d6d6"
+      color = "#000"
     } else if (props.node.id.includes("A")){
       color = "#1f77b4"
     }

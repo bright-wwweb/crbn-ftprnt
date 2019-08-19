@@ -1,7 +1,8 @@
-import * as d3 from "d3";
-import './TreeNity.scss';
-import React, { FC, useState, useEffect } from 'react';
-import { Links, Nodes, Labels } from 'components/index';
+import * as d3 from "d3"
+import './TreeNity.scss'
+import React, { FC, useState, useEffect } from 'react'
+import { Links, Nodes, Labels } from 'components/index'
+import { LocalStorage } from 'libreact/lib/LocalStorage'
 
 interface Props {
   width: number
@@ -57,13 +58,20 @@ const TreeNity: FC<Props> = ({
 
   simulation.force("link").links(graph.links)
 
+  function foo() {
+    debugger
+    simulation.stop()
+    // setGraph(newGraph)
+    simulation.restart()
+    simulation.alpha(1)
+  }
+
   // useEffects
-  
+
   useEffect(() => {
     if (signal) {
       _handleNewSignal()
     }
-    console.log('signalCount', signalCount)
   }, [signalCount])
 
   useEffect(() => {
@@ -111,7 +119,7 @@ const TreeNity: FC<Props> = ({
 
     simulation.nodes(graph.nodes).on("tick", ticked)
     simulation.force("link").links(graph.links)
-  }, [target])
+  }, [target, treeState])
 
   // methods
 
@@ -201,15 +209,24 @@ const TreeNity: FC<Props> = ({
 
   return (
     <div id="viz-container">
+      <LocalStorage
+        name='treeState'
+        data={{ treeState, graph }}
+        persist
+        onMount={({ treeState, graph }) => {
+          setTreeState(treeState)
+          setGraph(graph)
+        }}
+      />
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links}/>
         <Nodes nodes={graph.nodes}/>
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">
-        <button onClick={() => {handleClickSignal("A")}}>ADD BLUE NODE</button>
-        <button onClick={() => {handleClickSignal("B")}}>ADD GREEN NODE</button>
-        <button onClick={() => {handleClickSignal("C")}}>ADD RED NODE</button>
+        <button onClick={() => handleClickSignal("A")}>ADD BLUE NODE</button>
+        <button onClick={() => handleClickSignal("B")}>ADD GREEN NODE</button>
+        <button onClick={() => handleClickSignal("C")}>ADD RED NODE</button>
       </div>
     </div>
   )
