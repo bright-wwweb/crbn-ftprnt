@@ -58,14 +58,6 @@ const TreeNity: FC<Props> = ({
 
   simulation.force("link").links(graph.links)
 
-  function foo() {
-    debugger
-    simulation.stop()
-    // setGraph(newGraph)
-    simulation.restart()
-    simulation.alpha(1)
-  }
-
   // useEffects
 
   useEffect(() => {
@@ -78,7 +70,6 @@ const TreeNity: FC<Props> = ({
     if (signal) {
       _createNodeEntry()
     }
-    console.log(graph)
   }, [treeState])
 
   useEffect(() => {
@@ -210,17 +201,38 @@ const TreeNity: FC<Props> = ({
   return (
     <div id="viz-container">
       <LocalStorage
-        name='treeState'
-        data={{ treeState, graph }}
+        name='graph'
+        data={(() => {
+          const data = graph.nodes
+            .map((d: any, i: number) => ({ i, vx: d.vx, vy: d.vy }))
+            .filter((d: any) => d.vx)
+          return { data, graph }
+        })()}
         persist
-        onMount={({ treeState, graph }) => {
+        onMount={({ graph, data }) => {
+          const links = graph.links.map((d:any) => Object.create(d));
+          const nodes = graph.nodes.map((d:any) => Object.create(d));          const vx = data
+          if (vx && vx.length > 0) {
+            for(const f of vx) {
+              const i = f.i;
+              const x = f.vx
+              const y = f.vy
+              if (i && nodes[i] && x && y) {
+                nodes[i].vx = x;
+                nodes[i].vy = y;
+              }
+            }
+          }
+
+          // d3.forceSimulation(graph.nodes)
+          // simulation.force("link").links(graph.links)
           setTreeState(treeState)
           setGraph(graph)
         }}
       />
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links}/>
-        <Nodes nodes={graph.nodes}/>
+        <Nodes nodes={graph.nodes} simulation={simulation} />
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">

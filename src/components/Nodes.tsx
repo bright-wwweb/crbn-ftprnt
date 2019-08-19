@@ -7,7 +7,8 @@ interface INodeProps {
 }
 
 interface INodesProps {
-    nodes: d3Node[]
+    nodes: d3Node[],
+    simulation?: any,
 }
 
 const Node: React.FC<INodeProps> = (props) => {
