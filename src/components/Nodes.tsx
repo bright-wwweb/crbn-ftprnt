@@ -29,7 +29,7 @@ const Node: React.FC<INodeProps> = (props) => {
 
   return (
     <circle className="node"
-          r={props.node.id === "ORIGIN"? 15 : 5}
+          r={props.node.id === "ORIGIN"? 15 : 10}
           fill={handleColor()}
           ref={ref}>
       <title>{props.node.id}</title>

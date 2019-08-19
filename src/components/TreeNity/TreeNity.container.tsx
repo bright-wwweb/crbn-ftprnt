@@ -181,7 +181,7 @@ const TreeNity: FC<Props> = ({
         {
           source: `${signal}${source}`,
           target: `${signal}${target}`,
-          value: 1
+          value: 5
         }
       )
     } else {
@@ -189,7 +189,7 @@ const TreeNity: FC<Props> = ({
         {
           source: "ORIGIN",
           target: `${signal}${target}`,
-          value: 1
+          value: 5
         }
       )
     }

@@ -14,7 +14,7 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   const [signalCount, setSignalCount] = useState<number>(0)
   let gifs: string[] = []
 
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 80; i++) {
     if (i < 10) {
       gifs.push("../../../../gifs/00" + i + ".gif")
     } else {
@@ -30,7 +30,7 @@ const App: FC<IProps> = ({ width, height, ws }) => {
       }
     }
   }, [])
-
+// 3, 5, 25, 33, 38, 40, 46, 60, 62
   useEffect(() => {
     // if (signalCount % 10 === 0) {
       if (currentGif < gifs.length - 1) {
