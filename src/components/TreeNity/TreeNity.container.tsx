@@ -1,7 +1,7 @@
-import * as d3 from "d3";
-import './TreeNity.scss';
-import React, { FC, useState, useEffect } from 'react';
-import { Links, Nodes, Labels } from 'components/index';
+import * as d3 from "d3"
+import './TreeNity.scss'
+import React, { FC, useState, useEffect } from 'react'
+import { Links, Nodes, Labels } from 'components/index'
 
 interface Props {
   width: number
@@ -29,6 +29,8 @@ const TreeNity: FC<Props> = ({
 
   // constants
 
+  const [source, setSource] = useState<number | null>(null)
+  const [target, setTarget] = useState<number>(0)
   const [graph, setGraph] = useState<d3Graph>({
     nodes: [{
       id: "ORIGIN",
@@ -36,10 +38,6 @@ const TreeNity: FC<Props> = ({
     }],
     links: [],
   });
-
-  const [source, setSource] = useState<number | null>(null);
-  const [target, setTarget] = useState<number>(0)
-
   const [treeState, setTreeState] = useState<any>({
     A: {},
     B: {},
@@ -58,19 +56,17 @@ const TreeNity: FC<Props> = ({
   simulation.force("link").links(graph.links)
 
   // useEffects
-  
+
   useEffect(() => {
     if (signal) {
       _handleNewSignal()
     }
-    console.log('signalCount', signalCount)
   }, [signalCount])
 
   useEffect(() => {
     if (signal) {
       _createNodeEntry()
     }
-    console.log(graph)
   }, [treeState])
 
   useEffect(() => {
