@@ -13,8 +13,8 @@ ws.onopen = () => {
 
 ReactDOM.render(
     <App 
-        width={1270}
-        height={690}
+        width={2000}
+        height={1000}
         ws={ws}
     />,
     document.getElementById('root')
