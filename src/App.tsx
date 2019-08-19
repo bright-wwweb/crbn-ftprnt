@@ -23,24 +23,29 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   }
 
   useEffect(() => {
-    ws.onmessage = (e) => {
+    ws.onmessage = (e: MessageEvent) => {
       if(e.data !== "") {
         setSignal(e.data)
-        setSignalCount(signalCount+1)
       }
+
+      const newSignal = signalCount + 1 
+      setSignalCount(newSignal)
+    }
+
+    return function cleanup() {
+      ws.close()
     }
   }, [])
-// 3, 5, 25, 33, 38, 40, 46, 60, 62
+
+  // 3, 5, 25, 33, 38, 40, 46, 60, 62
   useEffect(() => {
-    // if (signalCount % 10 === 0) {
       if (currentGif < gifs.length - 1) {
         setCurrentGif(currentGif + 1)
       } else {
         setCurrentGif(0)
       }
       document.body.style.backgroundImage = 'url("' + gifs[currentGif] + '")'
-    // }
-  }, [signalCount])
+  }, [signal])
 
   const handleClickSignal = (signal: signalType) => {
     setSignal(signal)
