@@ -30,22 +30,21 @@ const TreeNity: FC<Props> = ({
 
   // constants
 
+  const [source, setSource] = useState<number | null>(null)
+  const [target, setTarget] = useState<number>(0)
   const [graph, setGraph] = useState<d3Graph>({
     nodes: [{
       id: "ORIGIN",
       group: 4
     }],
     links: [],
-  });
-
-  const [source, setSource] = useState<number | null>(null);
-  const [target, setTarget] = useState<number>(0)
+  })
 
   const [treeState, setTreeState] = useState<any>({
     A: {},
     B: {},
     C: {},
-  });
+  })
 
   // simulation
 
@@ -184,7 +183,7 @@ const TreeNity: FC<Props> = ({
         {
           source: `${signal}${source}`,
           target: `${signal}${target}`,
-          value: 1
+          value: 5
         }
       )
     } else {
@@ -192,7 +191,7 @@ const TreeNity: FC<Props> = ({
         {
           source: "ORIGIN",
           target: `${signal}${target}`,
-          value: 1
+          value: 5
         }
       )
     }
