@@ -165,16 +165,18 @@ const TreeNity: FC<Props> = ({
       default:
         throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for signal: ${signal}`)
     }
+
     const newGraph = {
       nodes: graph.nodes.concat({
         id: `${signal}${target}`,
         group}),
       links: _createLinkEntry()
     }
+
     simulation.stop()
     setGraph(newGraph)
     simulation.restart()
-    simulation.alpha(1)
+    simulation.alpha(2)
   }
 
   function _createLinkEntry() {
@@ -201,30 +203,32 @@ const TreeNity: FC<Props> = ({
     <div id="viz-container">
       <LocalStorage
         name='graph'
-        data={(() => {
-          const data = graph.nodes
-            .map((d: any, i: number) => ({ i, vx: d.vx, vy: d.vy }))
-            .filter((d: any) => d.vx)
-          return { data, graph }
-        })()}
+        data={(() => ({
+          graph,
+          data: simulation.nodes()
+            .map((d:any, i:number) => ({ i, vx: d.vx, vy: d.vy }))
+            .filter((d:any) => d.vx)
+        }))()}
         persist
         onMount={({ graph, data }) => {
-          const links = graph.links.map((d:any) => Object.create(d));
-          const nodes = graph.nodes.map((d:any) => Object.create(d));          const vx = data
-          if (vx && vx.length > 0) {
-            for(const f of vx) {
-              const i = f.i;
-              const x = f.vx
-              const y = f.vy
-              if (i && nodes[i] && x && y) {
-                nodes[i].vx = x;
-                nodes[i].vy = y;
+          const links = data.links.map((d:any) => Object.create(d));
+          const nodes = data.nodes.map((d:any) => Object.create(d));
+          const vx = data
+
+          if (vx && vx.length > 0)
+            for (const v of vx) {
+              const i = v.i
+              const vx = v.vx
+              const vy = v.vy
+
+              if (i && nodes[i] && vx && vy) {
+                nodes[i].vx = vx;
+                nodes[i].vy = vy;
               }
             }
-          }
 
-          // d3.forceSimulation(graph.nodes)
-          // simulation.force("link").links(graph.links)
+          d3.forceSimulation(nodes)
+          simulation.force("link").links(links)
           setTreeState(treeState)
           setGraph(graph)
         }}

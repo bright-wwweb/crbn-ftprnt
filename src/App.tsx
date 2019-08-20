@@ -24,40 +24,38 @@ const App: FC<IProps> = ({ width, height, ws }) => {
 
   useEffect(() => {
     ws.onmessage = (e) => {
-      if(e.data !== "") {
+      if (e.data !== "") {
         setSignal(e.data)
-        setSignalCount(signalCount+1)
+        setSignalCount(signalCount + 1)
       }
     }
-  }, [])
+  })
 
   // 3, 5, 25, 33, 38, 40, 46, 60, 62
   useEffect(() => {
-    // if (signalCount % 10 === 0) {
-      if (currentGif < gifs.length - 1) {
-        setCurrentGif(currentGif + 1)
-      } else {
-        setCurrentGif(0)
-      }
-      document.body.style.backgroundImage = 'url("' + gifs[currentGif] + '")'
-    // }
+    if (currentGif < gifs.length - 1) {
+      setCurrentGif(currentGif + 1)
+    } else {
+      setCurrentGif(0)
+    }
+    document.body.style.backgroundImage = 'url("' + gifs[currentGif] + '")'
   }, [signalCount])
 
   const handleClickSignal = (signal: signalType) => {
     setSignal(signal)
-    setSignalCount(signalCount+1)
+    setSignalCount(signalCount + 1)
   }
 
   return (
     <div className="App">
-      <Header />
+      <Header/>
       <TreeNity
         width={width}
         height={height}
         signal={signal}
         signalCount={signalCount}
         handleClickSignal={handleClickSignal}/>
-      <Footer />
+      <Footer/>
     </div>
   )
 }
