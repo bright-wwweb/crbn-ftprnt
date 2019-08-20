@@ -2,6 +2,7 @@ import * as d3 from "d3"
 import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
+import { LocalStorage } from 'libreact/lib/LocalStorage'
 
 interface Props {
   width: number
