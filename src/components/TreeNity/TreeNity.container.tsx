@@ -2,7 +2,6 @@ import * as d3 from "d3"
 import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
-import { LocalStorage } from 'libreact/lib/LocalStorage'
 
 interface Props {
   width: number
@@ -11,18 +10,6 @@ interface Props {
   signalCount: number
   handleClickSignal: Function
 }
-
-// custom hook that combines useState with local storage check
-// const useStateOrLocalStorage = (localStorageKey: string, initialValue: any) => {
-//   const [value, setValue] = useState(
-//     JSON.parse(localStorage.getItem(localStorageKey)) || initialValue
-//   );
-//   useEffect(() => {
-//     localStorage.setItem(localStorageKey, JSON.stringify(value))
-//   }, [value]);
-
-//   return [value, setValue];
-// };
 
 const TreeNity: FC<Props> = ({
   width, height, signal, signalCount, handleClickSignal
@@ -63,7 +50,7 @@ const TreeNity: FC<Props> = ({
     if (signal) {
       _handleNewSignal()
     }
-  }, [signalCount])
+  }, [signal, signalCount])
 
   useEffect(() => {
     if (signal) {
@@ -76,38 +63,25 @@ const TreeNity: FC<Props> = ({
     const link = d3.selectAll(".link")
     const label = d3.selectAll(".label");
 
-    function ticked() {
+    function tick() {
       link
-        .attr("x1", function(d: any) {
-          return d.source.x
-        })
-        .attr("y1", function(d: any) {
-          return d.source.y
-        })
-        .attr("x2", function(d: any) {
-          return d.target.x
-        })
-        .attr("y2", function(d: any) {
-          return d.target.y
-        })
+        .attr("x1", (d: any) => d.source.x)
+        .attr("y1", (d: any) => d.source.y)
+        .attr("x2", (d: any) => d.target.x)
+        .attr("y2", (d: any) => d.target.y)
+
       node
-        .attr("cx", function(d: any) {
-          return d.x = Math.max(5, Math.min(width - 5, d.x))
-        })
-        .attr("cy", function(d: any) {
-          return d.y = Math.max(5, Math.min(height - 5, d.y))
-        })
+        .attr("cx", (d: any) =>
+          d.x = Math.max(5, Math.min(width - 5, d.x)))
+        .attr("cy", (d: any) =>
+          d.y = Math.max(5, Math.min(height - 5, d.y)))
 
       label
-        .attr("x", function(d: any) {
-          return d.x + 5;
-        })
-        .attr("y", function(d: any) {
-          return d.y + 5;
-        })
+        .attr("x", (d: any) => d.x + 5)
+        .attr("y", (d: any) => d.y + 5)
     }
 
-    simulation.nodes(graph.nodes).on("tick", ticked)
+    simulation.nodes(graph.nodes).on("tick", tick)
     simulation.force("link").links(graph.links)
   }, [target, treeState])
 

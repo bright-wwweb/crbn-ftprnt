@@ -23,11 +23,17 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   }
 
   useEffect(() => {
-    ws.onmessage = (e) => {
-      if (e.data !== "") {
+    ws.onmessage = (e: MessageEvent) => {
+      if(e.data !== "") {
         setSignal(e.data)
-        setSignalCount(signalCount + 1)
       }
+
+      const newSignal = signalCount + 1
+      setSignalCount(newSignal)
+    }
+
+    return function cleanup() {
+      ws.close()
     }
   })
 
