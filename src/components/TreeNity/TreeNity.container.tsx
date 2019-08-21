@@ -3,6 +3,7 @@ import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
 import { LocalStorage } from 'libreact/lib/LocalStorage'
+import useLocalStorage from "../../hooks/useLocalStorage"
 
 interface Props {
   width: number
@@ -33,6 +34,8 @@ const TreeNity: FC<Props> = ({
     B: {},
     C: {},
   })
+
+  const [ foo ] = useLocalStorage('graph', {})
 
   // simulation
 
@@ -174,8 +177,13 @@ const TreeNity: FC<Props> = ({
     }
   }
 
+  console.log(graph.nodes)
+
   return (
     <div id="viz-container">
+      <pre>
+        { JSON.stringify(foo) }
+      </pre>
       <LocalStorage
         name='graph'
         data={(() => ({
