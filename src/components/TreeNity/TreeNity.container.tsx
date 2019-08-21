@@ -185,28 +185,6 @@ const TreeNity: FC<Props> = ({
             .filter((d:any) => d.vx)
         }))()}
         persist
-        onMount={({ graph, data }) => {
-          const links = data.links.map((d:any) => Object.create(d));
-          const nodes = data.nodes.map((d:any) => Object.create(d));
-          const vx = data
-
-          if (vx && vx.length > 0)
-            for (const v of vx) {
-              const i = v.i
-              const vx = v.vx
-              const vy = v.vy
-
-              if (i && nodes[i] && vx && vy) {
-                nodes[i].vx = vx;
-                nodes[i].vy = vy;
-              }
-            }
-
-          d3.forceSimulation(nodes)
-          simulation.force("link").links(links)
-          setTreeState(treeState)
-          setGraph(graph)
-        }}
       />
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links}/>

@@ -12,13 +12,14 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   const [currentGif, setCurrentGif] = useState<number>(0)
   const [signal, setSignal] = useState<signalType>(null)
   const [signalCount, setSignalCount] = useState<number>(0)
-  let gifs: string[] = []
+  const gifs: string[] = []
+  const imagePath = "./../../.."
 
   for (let i = 0; i < 80; i++) {
     if (i < 10) {
-      gifs.push("../../../../gifs/00" + i + ".gif")
+      gifs.push(`${imagePath}/gifs/00${i}.gif`)
     } else {
-      gifs.push("../../../../gifs/0" + i + ".gif")
+      gifs.push(`${imagePath}/gifs/0${i}.gif`)
     }
   }
 
@@ -32,12 +33,12 @@ const App: FC<IProps> = ({ width, height, ws }) => {
       setSignalCount(newSignal)
     }
 
+    // clean up
     return function cleanup() {
       ws.close()
     }
   })
 
-  // 3, 5, 25, 33, 38, 40, 46, 60, 62
   useEffect(() => {
     if (currentGif < gifs.length - 1) {
       setCurrentGif(currentGif + 1)
