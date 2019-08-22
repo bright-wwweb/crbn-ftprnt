@@ -2,6 +2,7 @@ import * as d3 from "d3"
 import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
+import random from 'lodash.random'
 // TODO: fix graph persist
 // import useLocalStorage from "../../hooks/useLocalStorage"
 
@@ -179,6 +180,13 @@ const TreeNity: FC<Props> = ({
     }
   }
 
+  const _fakeSignal = (signal: string): string => {
+    if (rawSignal) {
+      return `${signal}${random(+rawSignal[1] + 0.01 , +rawSignal[1] + 1.0).toString()}`
+    }
+    return`${signal}${random(0.01, 1.0).toString()}`
+  }
+
   return (
     <div id="viz-container">
       <svg className="viz-mount" width={width} height={height}>
@@ -187,9 +195,9 @@ const TreeNity: FC<Props> = ({
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">
-        <button onClick={() => handleClickSignal("A")}>ADD BLUE NODE</button>
-        <button onClick={() => handleClickSignal("B")}>ADD GREEN NODE</button>
-        <button onClick={() => handleClickSignal("C")}>ADD RED NODE</button>
+        <button onClick={() => handleClickSignal(_fakeSignal("A"))}>ADD BLUE NODE</button>
+        <button onClick={() => handleClickSignal(_fakeSignal("B"))}>ADD GREEN NODE</button>
+        <button onClick={() => handleClickSignal(_fakeSignal("C"))}>ADD RED NODE</button>
       </div>
     </div>
   )
