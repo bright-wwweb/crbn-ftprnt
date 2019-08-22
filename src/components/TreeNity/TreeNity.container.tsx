@@ -2,8 +2,7 @@ import * as d3 from "d3"
 import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
-import { LocalStorage } from 'libreact/lib/LocalStorage'
-import useLocalStorage from "../../hooks/useLocalStorage"
+// import useLocalStorage from "../../hooks/useLocalStorage"
 
 interface Props {
   width: number
@@ -35,14 +34,10 @@ const TreeNity: FC<Props> = ({
     C: {},
   })
 
-  const [ foo ] = useLocalStorage('graph', {})
-
   // simulation
 
   let simulation: any = d3.forceSimulation(graph.nodes)
-    .force("link", d3.forceLink().id(function(d: any) {
-      return d.id
-    }))
+    .force("link", d3.forceLink().id((d: any) => d.id))
     .force("charge", d3.forceManyBody().strength(-100))
     .force("center", d3.forceCenter(width / 2, height / 2))
 
@@ -65,7 +60,18 @@ const TreeNity: FC<Props> = ({
   useEffect(() => {
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
-    const label = d3.selectAll(".label");
+    const label = d3.selectAll(".label")
+
+    // apply persisted positions
+    const fx = JSON.parse(localStorage.getItem("positions"));
+    if (fx && fx.length > 0) {
+      for (const f of fx) {
+        if (f.i && graph.nodes[f.i] && f.fx && f.fy) {
+          graph.nodes[f.i].fx = f.fx;
+          graph.nodes[f.i].fy = f.fy;
+        }
+      }
+    }
 
     function tick() {
       link
@@ -147,7 +153,8 @@ const TreeNity: FC<Props> = ({
     const newGraph = {
       nodes: graph.nodes.concat({
         id: `${signal}${target}`,
-        group}),
+        group
+      }),
       links: _createLinkEntry()
     }
 
@@ -155,7 +162,15 @@ const TreeNity: FC<Props> = ({
     setGraph(newGraph)
     simulation.restart()
     simulation.alpha(2)
+
+    // save fixed locations to localStorage
+    // localStorage.setItem("positions", JSON.stringify(
+    //   simulation
+    //     .nodes()
+    //     .map((d: any, i: number) => ({ i, fx: d.fx, fy: d.fy }))
+    //     .filter((d: any) => d.fx)))
   }
+
 
   function _createLinkEntry() {
     if (source !== null) {
@@ -177,26 +192,11 @@ const TreeNity: FC<Props> = ({
     }
   }
 
-  console.log(graph.nodes)
-
   return (
     <div id="viz-container">
-      <pre>
-        { JSON.stringify(foo) }
-      </pre>
-      <LocalStorage
-        name='graph'
-        data={(() => ({
-          graph,
-          data: simulation.nodes()
-            .map((d:any, i:number) => ({ i, vx: d.vx, vy: d.vy }))
-            .filter((d:any) => d.vx)
-        }))()}
-        persist
-      />
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links}/>
-        <Nodes nodes={graph.nodes} simulation={simulation} />
+        <Nodes nodes={graph.nodes} simulation={simulation}/>
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">
