@@ -28,7 +28,7 @@ const App: FC<IProps> = ({ width, height, ws }) => {
       }
     }
   })
-// 3, 5, 25, 33, 38, 40, 46, 60, 62
+
   useEffect(() => {
     if (currentGif < gifs.length - 1) {
       setCurrentGif(currentGif + 1)
