@@ -24,7 +24,7 @@ const App: FC<IProps> = ({ width, height, ws }) => {
 
   useEffect(() => {
     ws.onmessage = (e: MessageEvent) => {
-      if(e.data !== "") {
+      if (e.data !== "") {
         setSignal(e.data)
       }
     }
