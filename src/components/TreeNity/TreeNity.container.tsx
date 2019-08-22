@@ -8,13 +8,12 @@ import { Links, Nodes, Labels } from 'components/index'
 interface Props {
   width: number
   height: number
-  signal: signalType
-  signalCount: number
+  rawSignal: signalType
   handleClickSignal: Function
 }
 
 const TreeNity: FC<Props> = ({
-  width, height, signal, signalCount, handleClickSignal
+  width, height, rawSignal, handleClickSignal
 }) => {
 
   // constants
@@ -35,6 +34,11 @@ const TreeNity: FC<Props> = ({
     C: {},
   })
 
+  let signal: signalType
+  if (rawSignal) {
+    signal = rawSignal[0]
+  }
+
   // simulation
 
   let simulation: any = d3.forceSimulation(graph.nodes)
@@ -47,13 +51,13 @@ const TreeNity: FC<Props> = ({
   // useEffects
 
   useEffect(() => {
-    if (signal) {
+    if (rawSignal) {
       _handleNewSignal()
     }
-  }, [signal, signalCount])
+  }, [rawSignal])
 
   useEffect(() => {
-    if (signal) {
+    if (rawSignal) {
       _createNodeEntry()
     }
   }, [treeState])
@@ -83,7 +87,7 @@ const TreeNity: FC<Props> = ({
 
     simulation.nodes(graph.nodes).on("tick", tick)
     simulation.force("link").links(graph.links)
-  }, [target, treeState])
+  }, [target])
 
   // methods
 
@@ -151,7 +155,7 @@ const TreeNity: FC<Props> = ({
     simulation.stop()
     setGraph(newGraph)
     simulation.restart()
-    simulation.alpha(2)
+    simulation.alpha(1)
   }
 
 

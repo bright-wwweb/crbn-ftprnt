@@ -6,6 +6,7 @@ import (
 	"github.com/tarm/serial"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -116,21 +117,28 @@ func newSerialConn(name string, baud int) *serial.Config {
 }
 
 func serialListen(signal string, c *serial.Config, h *Hub) {
+	var i int
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	buf := make([]byte, 128)
+	buf := make([]byte, 1)
 	for {
+		i = i + 1
 		n, err := s.Read(buf)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		log.Printf("%s\n", string(buf[:n]))
-		message := bytes.TrimSpace(bytes.Replace([]byte(signal), newline, space, -1))
-		h.broadcast <- message
+		b := string(buf[:n])
+		log.Printf("%s\n", b)
+
+		if b == signal {
+			fullSignal := signal + strconv.Itoa(i)
+			message := bytes.TrimSpace(bytes.Replace([]byte(fullSignal), newline, space, -1))
+			h.broadcast <- message
+		}
 	}
 }
 

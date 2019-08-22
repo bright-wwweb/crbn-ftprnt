@@ -11,8 +11,7 @@ interface IProps {
 const App: FC<IProps> = ({ width, height, ws }) => {
   const [currentGif, setCurrentGif] = useState<number>(0)
   const [signal, setSignal] = useState<signalType>(null)
-  const [signalCount, setSignalCount] = useState<number>(0)
-  const gifs: string[] = []
+  let gifs: string[] = []
   const imagePath = "./../../.."
 
   for (let i = 0; i < 80; i++) {
@@ -28,9 +27,6 @@ const App: FC<IProps> = ({ width, height, ws }) => {
       if(e.data !== "") {
         setSignal(e.data)
       }
-
-      const newSignal = signalCount + 1
-      setSignalCount(newSignal)
     }
   })
 
@@ -41,23 +37,21 @@ const App: FC<IProps> = ({ width, height, ws }) => {
       setCurrentGif(0)
     }
     document.body.style.backgroundImage = 'url("' + gifs[currentGif] + '")'
-  }, [signalCount])
+  }, [signal])
 
   const handleClickSignal = (signal: signalType) => {
     setSignal(signal)
-    setSignalCount(signalCount + 1)
   }
 
   return (
     <div className="App">
-      <Header/>
+      <Header />
       <TreeNity
         width={width}
         height={height}
-        signal={signal}
-        signalCount={signalCount}
+        rawSignal={signal}
         handleClickSignal={handleClickSignal}/>
-      <Footer/>
+      <Footer />
     </div>
   )
 }
