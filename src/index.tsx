@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import './utils/styles/global-styles.css';
 import * as serviceWorker from './services/serviceWorker';
 
-const ws = new WebSocket("ws://192.168.50.3:4000/ws")
+const ws = new WebSocket("ws://0.0.0.0:4000/ws")
 
 ws.onopen = () => {
     // connected
