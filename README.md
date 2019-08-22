@@ -1,5 +1,14 @@
-## CRBN-FTPRNT
+## CRBN:FT:PRNT
+
+
+### CLIENT (D3 visualization)
 
 `yarn`
 
-`yarn start`    
+`yarn start`   
+
+--- 
+
+### SERVER (serial communications)
+
+`go run commm/main.go`

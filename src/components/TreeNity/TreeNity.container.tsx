@@ -2,6 +2,8 @@ import * as d3 from "d3"
 import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
+// TODO: fix graph persist
+// import useLocalStorage from "../../hooks/useLocalStorage"
 
 interface Props {
   width: number
@@ -24,12 +26,13 @@ const TreeNity: FC<Props> = ({
       group: 4
     }],
     links: [],
-  });
+  })
+
   const [treeState, setTreeState] = useState<any>({
     A: {},
     B: {},
     C: {},
-  });
+  })
 
   let signal: signalType
   if (rawSignal) {
@@ -39,9 +42,7 @@ const TreeNity: FC<Props> = ({
   // simulation
 
   let simulation: any = d3.forceSimulation(graph.nodes)
-    .force("link", d3.forceLink().id(function(d: any) {
-      return d.id
-    }))
+    .force("link", d3.forceLink().id((d: any) => d.id))
     .force("charge", d3.forceManyBody().strength(-100))
     .force("center", d3.forceCenter(width / 2, height / 2))
 
@@ -64,40 +65,27 @@ const TreeNity: FC<Props> = ({
   useEffect(() => {
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
-    const label = d3.selectAll(".label");
+    const label = d3.selectAll(".label")
 
-    function ticked() {
+    function tick() {
       link
-        .attr("x1", function(d: any) {
-          return d.source.x
-        })
-        .attr("y1", function(d: any) {
-          return d.source.y
-        })
-        .attr("x2", function(d: any) {
-          return d.target.x
-        })
-        .attr("y2", function(d: any) {
-          return d.target.y
-        })
+        .attr("x1", (d: any) => d.source.x)
+        .attr("y1", (d: any) => d.source.y)
+        .attr("x2", (d: any) => d.target.x)
+        .attr("y2", (d: any) => d.target.y)
+
       node
-        .attr("cx", function(d: any) {
-          return d.x = Math.max(5, Math.min(width - 5, d.x))
-        })
-        .attr("cy", function(d: any) {
-          return d.y = Math.max(5, Math.min(height - 5, d.y))
-        })
+        .attr("cx", (d: any) =>
+          d.x = Math.max(5, Math.min(width - 5, d.x)))
+        .attr("cy", (d: any) =>
+          d.y = Math.max(5, Math.min(height - 5, d.y)))
 
       label
-        .attr("x", function(d: any) {
-          return d.x + 5;
-        })
-        .attr("y", function(d: any) {
-          return d.y + 5;
-        })
+        .attr("x", (d: any) => d.x + 5)
+        .attr("y", (d: any) => d.y + 5)
     }
 
-    simulation.nodes(graph.nodes).on("tick", ticked)
+    simulation.nodes(graph.nodes).on("tick", tick)
     simulation.force("link").links(graph.links)
   }, [target])
 
@@ -155,17 +143,21 @@ const TreeNity: FC<Props> = ({
       default:
         throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for signal: ${signal}`)
     }
+
     const newGraph = {
       nodes: graph.nodes.concat({
         id: `${signal}${target}`,
-        group}),
+        group
+      }),
       links: _createLinkEntry()
     }
+
     simulation.stop()
     setGraph(newGraph)
     simulation.restart()
     simulation.alpha(1)
   }
+
 
   function _createLinkEntry() {
     if (source !== null) {
@@ -191,13 +183,13 @@ const TreeNity: FC<Props> = ({
     <div id="viz-container">
       <svg className="viz-mount" width={width} height={height}>
         <Links links={graph.links}/>
-        <Nodes nodes={graph.nodes}/>
+        <Nodes nodes={graph.nodes} simulation={simulation}/>
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">
-        <button onClick={() => {handleClickSignal("A")}}>ADD BLUE NODE</button>
-        <button onClick={() => {handleClickSignal("B")}}>ADD GREEN NODE</button>
-        <button onClick={() => {handleClickSignal("C")}}>ADD RED NODE</button>
+        <button onClick={() => handleClickSignal("A")}>ADD BLUE NODE</button>
+        <button onClick={() => handleClickSignal("B")}>ADD GREEN NODE</button>
+        <button onClick={() => handleClickSignal("C")}>ADD RED NODE</button>
       </div>
     </div>
   )

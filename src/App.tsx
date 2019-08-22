@@ -12,18 +12,19 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   const [currentGif, setCurrentGif] = useState<number>(0)
   const [signal, setSignal] = useState<signalType>(null)
   let gifs: string[] = []
+  const imagePath = "./../../.."
 
   for (let i = 0; i < 80; i++) {
     if (i < 10) {
-      gifs.push("../../../../gifs/00" + i + ".gif")
+      gifs.push(`${imagePath}/gifs/00${i}.gif`)
     } else {
-      gifs.push("../../../../gifs/0" + i + ".gif")
+      gifs.push(`${imagePath}/gifs/0${i}.gif`)
     }
   }
 
   useEffect(() => {
-    ws.onmessage = (e) => {
-      if(e.data !== "") {
+    ws.onmessage = (e: MessageEvent) => {
+      if (e.data !== "") {
         setSignal(e.data)
       }
     }
@@ -45,9 +46,9 @@ const App: FC<IProps> = ({ width, height, ws }) => {
   return (
     <div className="App">
       <Header />
-      <TreeNity 
-        width={width} 
-        height={height} 
+      <TreeNity
+        width={width}
+        height={height}
         rawSignal={signal}
         handleClickSignal={handleClickSignal}/>
       <Footer />

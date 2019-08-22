@@ -6,7 +6,7 @@ interface ILabelProps {
 }
 
 interface ILabelsProps {
-  nodes: d3Node[] 
+  nodes: d3Node[]
 }
 
 const Label: React.FC<ILabelProps> = (props) => {
