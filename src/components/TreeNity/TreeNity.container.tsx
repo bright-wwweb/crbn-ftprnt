@@ -2,6 +2,7 @@ import * as d3 from "d3"
 import './TreeNity.scss'
 import React, { FC, useState, useEffect } from 'react'
 import { Links, Nodes, Labels } from 'components/index'
+// TODO: fix graph persist
 // import useLocalStorage from "../../hooks/useLocalStorage"
 
 interface Props {
@@ -61,17 +62,6 @@ const TreeNity: FC<Props> = ({
     const node = d3.selectAll(".node")
     const link = d3.selectAll(".link")
     const label = d3.selectAll(".label")
-
-    // apply persisted positions
-    const fx = JSON.parse(localStorage.getItem("positions"));
-    if (fx && fx.length > 0) {
-      for (const f of fx) {
-        if (f.i && graph.nodes[f.i] && f.fx && f.fy) {
-          graph.nodes[f.i].fx = f.fx;
-          graph.nodes[f.i].fy = f.fy;
-        }
-      }
-    }
 
     function tick() {
       link
@@ -162,13 +152,6 @@ const TreeNity: FC<Props> = ({
     setGraph(newGraph)
     simulation.restart()
     simulation.alpha(2)
-
-    // save fixed locations to localStorage
-    // localStorage.setItem("positions", JSON.stringify(
-    //   simulation
-    //     .nodes()
-    //     .map((d: any, i: number) => ({ i, fx: d.fx, fy: d.fy }))
-    //     .filter((d: any) => d.fx)))
   }
 
 

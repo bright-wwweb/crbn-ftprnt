@@ -32,11 +32,6 @@ const App: FC<IProps> = ({ width, height, ws }) => {
       const newSignal = signalCount + 1
       setSignalCount(newSignal)
     }
-
-    // clean up
-    return function cleanup() {
-      ws.close()
-    }
   })
 
   useEffect(() => {

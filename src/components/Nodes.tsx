@@ -29,18 +29,7 @@ const drag = (simulation: any) => {
   }
 
   function dragended(d: any) {
-    if (!d3.event.active) simulation.alphaTarget(0);
-
-    // save fixed locations to localStorage
-    localStorage.setItem(
-      "positions",
-      JSON.stringify(
-        simulation
-          .nodes()
-          .map((d: any, i: number) => ({ i, fx: d.fx, fy: d.fy }))
-          .filter((d: any) => d.fx)
-      )
-    )
+    // TODO: implement graph persistence here
   }
 
   return d3
@@ -53,23 +42,7 @@ const drag = (simulation: any) => {
 const Node: React.FC<INodeProps> = (props) => {
   const ref = useRef(null)
 
-
-
   useEffect(() => {
-    // apply fixed positions found in localStorage
-    const fx = JSON.parse(localStorage.getItem("positions"))
-    if (fx && fx.length > 0) {
-      for (const f of fx) {
-        const i = f.i
-        const fx = f.fx
-        const fy = f.fy
-        if (i && props.node[i] && fx && fy) {
-          props.node[i].fx = fx;
-          props.node[i].fy = fy;
-        }
-      }
-    }
-
     d3.select(ref.current)
       .data([props.node])
       .call(drag(props.simulation));
