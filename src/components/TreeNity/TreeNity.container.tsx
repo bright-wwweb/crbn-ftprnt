@@ -6,25 +6,12 @@ import { Links, Nodes, Labels } from 'components/index'
 interface Props {
   width: number
   height: number
-  signal: signalType
-  signalCount: number
+  rawSignal: signalType
   handleClickSignal: Function
 }
 
-// custom hook that combines useState with local storage check
-// const useStateOrLocalStorage = (localStorageKey: string, initialValue: any) => {
-//   const [value, setValue] = useState(
-//     JSON.parse(localStorage.getItem(localStorageKey)) || initialValue
-//   );
-//   useEffect(() => {
-//     localStorage.setItem(localStorageKey, JSON.stringify(value))
-//   }, [value]);
-
-//   return [value, setValue];
-// };
-
 const TreeNity: FC<Props> = ({
-  width, height, signal, signalCount, handleClickSignal
+  width, height, rawSignal, handleClickSignal
 }) => {
 
   // constants
@@ -44,6 +31,11 @@ const TreeNity: FC<Props> = ({
     C: {},
   });
 
+  let signal: signalType
+  if (rawSignal) {
+    signal = rawSignal[0]
+  }
+
   // simulation
 
   let simulation: any = d3.forceSimulation(graph.nodes)
@@ -58,13 +50,13 @@ const TreeNity: FC<Props> = ({
   // useEffects
 
   useEffect(() => {
-    if (signal) {
+    if (rawSignal) {
       _handleNewSignal()
     }
-  }, [signalCount])
+  }, [rawSignal])
 
   useEffect(() => {
-    if (signal) {
+    if (rawSignal) {
       _createNodeEntry()
     }
   }, [treeState])
