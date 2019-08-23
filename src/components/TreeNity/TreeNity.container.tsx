@@ -195,22 +195,25 @@ const TreeNity: FC<Props> = ({
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">
+        {/* red */}
         <button
           className="btn"
           style={{
-            backgroundColor: "RED",
+            backgroundColor: "rgb(228, 26, 28)",
           }}
           onClick={() => handleClickSignal(_fakeSignal("B"))}></button>
+        {/* green */}
         <button
           className="btn"
           style={{
-            backgroundColor: "GREEN",
+            backgroundColor: "rgb(77, 175, 74)",
           }}
           onClick={() => handleClickSignal(_fakeSignal("C"))}></button>
+        {/* blue */}
         <button
           className="btn"
           style={{
-          backgroundColor: "BLUE",
+          backgroundColor: "rgb(55, 126, 184)",
         }} onClick={() => handleClickSignal(_fakeSignal("A"))}></button>
       </div>
     </div>
