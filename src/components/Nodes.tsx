@@ -52,8 +52,6 @@ const Node: React.FC<INodeProps> = (props) => {
     let color = props.color
     if (props.node.id === "ORIGIN") {
       color = "#000"
-    } else if (props.node.id.includes("A")) {
-      color = "#1f77b4"
     }
     return color
   }
@@ -69,13 +67,13 @@ const Node: React.FC<INodeProps> = (props) => {
 }
 
 const Nodes: React.FC<INodesProps> = (props) => {
-  const color = d3.scaleOrdinal(d3.schemeCategory10)
+  const color = ['#ff0000', '#00ff00', '#0000ff']
   const nodes = props.nodes.map((node: d3Node, index: number) => {
     return (
       <Node
         key={index}
         node={node}
-        color={color(node.group.toString())}
+        color={color[node.group - 1]}
         simulation={props.simulation}/>
     )
   })
