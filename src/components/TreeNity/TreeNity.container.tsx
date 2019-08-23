@@ -136,11 +136,11 @@ const TreeNity: FC<Props> = ({
 
     switch (signal) {
       case "A":
-        group = 1; break
-      case "B":
-        group = 2; break
-      case "C":
         group = 3; break
+      case "B":
+        group = 1; break
+      case "C":
+        group = 2; break
       default:
         throw new Error(`Gurrlll this ain't A B nor C. Check yoself. Wut came thru for signal: ${signal}`)
     }
@@ -195,9 +195,23 @@ const TreeNity: FC<Props> = ({
         <Labels nodes={graph.nodes}/>
       </svg>
       <div id="btn-container">
-        <button onClick={() => handleClickSignal(_fakeSignal("A"))}>ADD BLUE NODE</button>
-        <button onClick={() => handleClickSignal(_fakeSignal("B"))}>ADD GREEN NODE</button>
-        <button onClick={() => handleClickSignal(_fakeSignal("C"))}>ADD RED NODE</button>
+        <button
+          className="btn"
+          style={{
+            backgroundColor: "RED",
+          }}
+          onClick={() => handleClickSignal(_fakeSignal("B"))}></button>
+        <button
+          className="btn"
+          style={{
+            backgroundColor: "GREEN",
+          }}
+          onClick={() => handleClickSignal(_fakeSignal("C"))}></button>
+        <button
+          className="btn"
+          style={{
+          backgroundColor: "BLUE",
+        }} onClick={() => handleClickSignal(_fakeSignal("A"))}></button>
       </div>
     </div>
   )
