@@ -67,7 +67,8 @@ const Node: React.FC<INodeProps> = (props) => {
 }
 
 const Nodes: React.FC<INodesProps> = (props) => {
-  const color = ['#ff0000', '#00ff00', '#0000ff']
+  // [red, green, blue]
+  const color = ['rgb(228, 26, 28)', 'rgb(77, 175, 74)', 'rgb(55, 126, 184)']
   const nodes = props.nodes.map((node: d3Node, index: number) => {
     return (
       <Node
