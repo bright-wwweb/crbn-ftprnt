@@ -17,7 +17,8 @@ const TreeNity: FC<Props> = ({
   width, height, rawSignal, handleClickSignal
 }) => {
 
-  const initialGraph = parseLocalStorage(localStorage.getItem('graph'))
+  // initialState
+  const initialGraph: any = parseLocalStorage(localStorage.getItem('graph'))
 
   function parseLocalStorage(graph: string) {
     const parsedGraph = JSON.parse(graph)
@@ -44,6 +45,7 @@ const TreeNity: FC<Props> = ({
     }
     return { nodes, links }
   }
+
 
   // constants
 
