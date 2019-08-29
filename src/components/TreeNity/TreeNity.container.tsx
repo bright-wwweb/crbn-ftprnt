@@ -17,17 +17,39 @@ const TreeNity: FC<Props> = ({
   width, height, rawSignal, handleClickSignal
 }) => {
 
+  const initialGraph = parseLocalStorage(localStorage.getItem('graph'))
+
+  function parseLocalStorage(graph: string) {
+    const parsedGraph = JSON.parse(graph)
+    let nodes: any = []
+    let links: any = []
+    if (parsedGraph) {
+      // parse out coordinate data from localStorage graph
+      nodes = parsedGraph.nodes.reduce((acc: any, currVal: any) => {
+        acc.push({ id: currVal.id, group: currVal.group })
+        return acc
+      }, [])
+
+      links = parsedGraph.links.reduce((acc: any, currVal: any) => {
+        acc.push({ source: currVal.source.id, target: currVal.target.id, value: currVal.value })
+        return acc
+      }, [])
+    } else {
+      nodes = [
+        {
+          id: "ORIGIN",
+          group: 4,
+        }
+      ]
+    }
+    return { nodes, links }
+  }
+
   // constants
 
   const [source, setSource] = useState<number | null>(null)
   const [target, setTarget] = useState<number>(0)
-  const [graph, setGraph] = useState<d3Graph>({
-    nodes: [{
-      id: "ORIGIN",
-      group: 4
-    }],
-    links: [],
-  });
+  const [graph, setGraph] = useState<d3Graph>(initialGraph);
 
   const [treeState, setTreeState] = useState<any>({
     A: {},
@@ -88,6 +110,7 @@ const TreeNity: FC<Props> = ({
 
     simulation.nodes(graph.nodes).on("tick", tick)
     simulation.force("link").links(graph.links)
+    localStorage.setItem('graph', JSON.stringify(graph))
   }, [target])
 
   // methods
