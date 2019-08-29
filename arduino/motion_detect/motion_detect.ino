@@ -6,7 +6,7 @@ long unsigned int lowIn;
 
 //the amount of milliseconds the sensor has to be low
 //before we assume all motion has stopped
-long unsigned int pause = 100;
+long unsigned int pause = 0;
 
 boolean lockLow = true;
 boolean takeLowTime;
@@ -17,7 +17,8 @@ int ledPin = 13;
 /////////////////////////////
 //SETUP
 void setup() {
-  Serial.begin(38400);
+  // rates for A, B, C = 9600, 19200, 38400
+  Serial.begin(9600);
   pinMode(pirPin, INPUT);
   pinMode(ledPin, OUTPUT);
   digitalWrite(pirPin, LOW);
@@ -42,7 +43,7 @@ void loop() {
     if (lockLow) {
       //makes sure we wait for a transition to LOW before any further output is made:
       lockLow = false;
-      Serial.println("C");
+      Serial.println("A");
       delay(50);
     }
     takeLowTime = true;
@@ -61,7 +62,6 @@ void loop() {
       //makes sure this block of code is only executed again after
       //a new motion sequence has been detected
       lockLow = true;
-//      Serial.println("A_LOW");
       delay(50);
     }
   }

@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom';
 import './utils/styles/global-styles.css';
 import * as serviceWorker from './services/serviceWorker';
 
-const ws = new WebSocket("ws://10.0.0.156:4000/ws")
+const ip = "0.0.0.0"
+const ws = new WebSocket(`ws://${ip}:4000/ws`)
 
 ws.onopen = () => {
     // connected
@@ -12,7 +13,7 @@ ws.onopen = () => {
 }
 
 ReactDOM.render(
-    <App 
+    <App
         width={2000}
         height={1000}
         ws={ws}
