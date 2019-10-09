@@ -30,6 +30,7 @@ const TreeNity: FC<Props> = ({
         acc.push({ id: currVal.id, group: currVal.group })
         return acc
       }, [])
+      
       links = parsedGraph.links.reduce((acc: any, currVal: any) => {
         acc.push({ source: currVal.source.id, target: currVal.target.id, value: currVal.value })
         return acc
